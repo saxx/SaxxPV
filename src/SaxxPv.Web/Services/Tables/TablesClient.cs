@@ -31,7 +31,7 @@ public class TablesClient
 
     public IList<SemsRow> Load(DateTime start, DateTime end, ILogger? log)
     {
-        var tablesClient = new TableClient(_tablesOptions.TablesConnectionString, _tablesOptions.SemsTableName);
+        var tablesClient = new TableClient(_tablesOptions.ConnectionString, _tablesOptions.SemsTableName);
         log?.LogInformation($"Loading data for {start:yyyy-MM-dd} to {end:yyyy-MM-dd} from SEMS-Portal tables ...");
 
         var reverseTicksStart = DateTime.MaxValue.Ticks - start.AddSeconds(30).CetToUtc().Ticks; // add a minute extra because sometimes a few seconds spill over into the new day
