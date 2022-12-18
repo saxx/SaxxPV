@@ -15,5 +15,5 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS final
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
-COPY --from=publish /app/publish .
+COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "SaxxPv.Web.dll"]
