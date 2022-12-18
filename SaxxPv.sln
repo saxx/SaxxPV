@@ -5,6 +5,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{5680AE01-C6C7-4EA9-B98F-50936A0A2345}"
 	ProjectSection(SolutionItems) = preProject
 		dockerfile = dockerfile
+        pipeline.yml = .github/workflows/pipeline.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaxxPv.Web.Tests", "test\SaxxPv.Web.Tests\SaxxPv.Web.Tests.csproj", "{FA8C5503-BDE2-47AC-89F4-24D0871FB5B0}"

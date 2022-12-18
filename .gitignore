@@ -3,3 +3,4 @@ obj
 *.user
 AppSettings.Development.json
 .DS_Store
+.idea
