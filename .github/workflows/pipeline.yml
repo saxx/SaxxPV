@@ -10,6 +10,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env: # Or as an environment variable
+      tables__connectionstring: ${{ secrets.tables__connectionstring }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
