@@ -4,7 +4,6 @@
         <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
     
@@ -13,7 +12,9 @@
     </ItemGroup>
     
     <ItemGroup>
-      <PackageReference Include="Adliance.AspNetCore.Buddy" Version="7.0.0.3" />
-      <PackageReference Include="Azure.Data.Tables" Version="12.7.1" />
+      <PackageReference Include="Adliance.AspNetCore.Buddy" Version="7.0.0.7" />
+      <PackageReference Include="Adliance.Buddy.CodeStyle" Version="7.0.0.4" />
+      <PackageReference Include="Adliance.Buddy.DateTime" Version="7.0.0.5" />
+      <PackageReference Include="Azure.Data.Tables" Version="12.8.1" />
     </ItemGroup>
 </Project>

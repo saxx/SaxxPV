@@ -4,4 +4,5 @@ public class TablesOptions
 {
     public string ConnectionString { get; set; } = "";
     public string SemsTableName { get; set; } = "";
+    public string PricingTableName { get; set; } = "";
 }

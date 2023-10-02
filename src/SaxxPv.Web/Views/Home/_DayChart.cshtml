@@ -1,0 +1,66 @@
+﻿@using Adliance.Buddy.DateTime
+@using System.Text.Json
+@model SaxxPv.Web.ViewModels.Home.DayViewModel
+
+<div id="productionChart" style="height:400px;"></div>
+<script>
+    const options = {
+        "grid": {
+            "left": 25,
+            "top": 25,
+            "right": 15,
+            "bottom": 20
+        },
+        "xAxis": {
+            "type": "category",
+            "data": @Html.Raw(JsonSerializer.Serialize(Model.ChartTimes))
+        },
+        "yAxis": {
+            "type": "value"
+        },
+        "series": [{
+            "data": @Html.Raw(JsonSerializer.Serialize(Model.ChartPv)),
+            "type": "line",
+            "smooth": true,
+            "showSymbol": false,
+            "lineStyle": {
+                "width": 0
+            },
+            "areaStyle": {
+                "color": "#7bc043",
+                "opacity": 0.5
+            }
+        }, {
+            "data": @Html.Raw(JsonSerializer.Serialize(Model.ChartLoad)),
+            "type": "line",
+            "smooth": true,
+            "showSymbol": false,
+            "lineStyle": {
+                "width": 0
+            },
+            "areaStyle": {
+                "color": "#ee4035",
+                "opacity": 0.5
+            }
+        /*}, {
+            "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "type": "line",
+            "smooth": true,
+            "lineStyle": {
+                "width": 1,
+                "color": "#0392cf"
+            },
+            "showSymbol": false*/
+        }, {
+            "data": @Html.Raw(JsonSerializer.Serialize(Model.ChartGrid)),
+            "type": "line",
+            "smooth": true,
+            "lineStyle": {
+                "width": 3,
+                "color": "#000"
+            },
+            "showSymbol": false
+        }]
+    }
+    echarts.init(document.getElementById("productionChart")).setOption(options);
+</script>

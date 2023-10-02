@@ -1,0 +1,27 @@
+﻿@model SaxxPv.Web.ViewModels.Home.DayViewModel
+
+<div style="margin-top:2rem; text-align:center;">
+    <h3>Day</h3>
+    <i class="fad fa-lightbulb-on"></i>
+    -@(Model.DayConsumption?.ToString("N1")) kW/h
+    <br/>
+    <i class="fad fa-solar-panel"></i>
+    +@(Model.DayPv?.ToString("N1")) kW/h
+    <br/>
+    <i class="fad fa-solar-panel"></i>
+    <i class="fad fa-arrow-right-long"></i>
+    <i class="fad fa-house"></i>
+    @(Model.DaySelfUse?.ToString("N1")) kW/h
+    <br/>
+    <i class="fad fa-solar-panel"></i>
+    <i class="fad fa-arrow-right-long"></i>
+    <i class="fad fa-utility-pole-double"></i>
+    @(Model.DaySold?.ToString("N1")) kW/h
+    <small>(+@Model.DaySoldPrice?.ToString("N2") €)</small>
+    <br/>
+    <i class="fad fa-utility-pole-double"></i>
+    <i class="fad fa-arrow-right-long"></i>
+    <i class="fad fa-house"></i>
+    @(Model.DayBought?.ToString("N1")) kW/h
+    <small>(-@Model.DayBoughtPrice?.ToString("N2") €)</small>
+</div>

@@ -1,0 +1,41 @@
+﻿@using SaxxPv.Web.Controllers
+@model SaxxPv.Web.ViewModels.Home.MonthViewModel
+
+<table style="width:100%; margin-top:1rem; margin-bottom:1rem;">
+    <thead>
+    <tr>
+        <th>Day</th>
+        <th style="text-align:right; width:85px;">Used</th>
+        <th style="text-align:right; width:85px;">Sold</th>
+        <th style="text-align:right; width:85px;">Bought</th>
+        <th style="text-align:right; width:85px;">Income</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    @foreach (var d in Model.Days)
+    {
+        <tr>
+            <td>
+                <a asp-action="@nameof(HomeController.Day)" asp-route-day="@d.DateTime.ToString("yyyy-MM-dd")">
+                    @d.DateTime.ToString("dddd, dd.MM.")
+                </a>
+            </td>
+            <td style="text-align:right;">@(d.Consumption.ToString("N1"))</td>
+            <td style="text-align:right;">@(d.Sold.ToString("N1"))</td>
+            <td style="text-align:right;">@(d.Bought.ToString("N1"))</td>
+            <td style="text-align:right;">@(d.Price.ToString("N2")) €</td>
+        </tr>
+    }
+    </tbody>
+
+    <tfoot>
+    <tr>
+        <td></td>
+        <td style="text-align:right; font-weight: bold;">@(Model.Days.Sum(x => x.Consumption).ToString("N1"))</td>
+        <td style="text-align:right;font-weight: bold;">@(Model.Days.Sum(x => x.Sold).ToString("N1"))</td>
+        <td style="text-align:right;font-weight: bold;">@(Model.Days.Sum(x => x.Bought).ToString("N1"))</td>
+        <td style="text-align:right;font-weight: bold;">@(Model.Days.Sum(x => x.Price).ToString("N2")) €</td>
+    </tr>
+    </tfoot>
+</table>

@@ -1,3 +1,4 @@
+using Adliance.Buddy.DateTime;
 using Azure.Data.Tables;
 
 namespace SaxxPv.Web.Models.Tables;
@@ -9,11 +10,11 @@ public class SemsRow
         StationId = stationId;
         DateTime = dateTime;
     }
-    
+
     public SemsRow(TableEntity entity)
     {
         StationId = entity.PartitionKey;
-        DateTime = entity.Timestamp?.DateTime ?? DateTime.UtcNow;
+        DateTime = (entity.Timestamp?.DateTime ?? DateTime.UtcNow).UtcToCet();
 
         CurrentLoad = GetValue(entity, "CurrentLoad");
         CurrentPv = GetValue(entity, "CurrentPv");
@@ -24,9 +25,11 @@ public class SemsRow
         DaySold = GetValue(entity, "DaySold");
         DayConsumption = GetValue(entity, "DayConsumption");
         DaySelfUse = GetValue(entity, "DaySelfUse");
+
+        if (CurrentLoad > CurrentPv) CurrentGrid *= -1;
     }
 
-    private double GetValue(TableEntity entity, string key)
+    private static double GetValue(TableEntity entity, string key)
     {
         if (entity.ContainsKey(key) && entity[key] is double d) return d;
         if (entity.ContainsKey(key) && entity[key] is int i) return i;

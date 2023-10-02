@@ -1,0 +1,57 @@
+﻿@using System.Text.Json
+@model SaxxPv.Web.ViewModels.Home.MonthViewModel
+
+<div id="productionChart" style="height:600px;"></div>
+<script>
+    const options = {
+        "grid": {
+            "left": 30,
+            "top": 30,
+            "right": 30,
+            "bottom": 20
+        },
+        "xAxis": {
+            "type": "category",
+            "data": @Html.Raw(JsonSerializer.Serialize(Model.Days.Select(x => x.DateTime.ToString("dd.MM."))))
+        },
+        "yAxis": [{
+            "name": "kW/h",
+            "type": "value",
+            "min": -30,
+            "max": 60
+        }, {
+            "name": "\u20AC",
+            "type": "value",
+            "min": -10,
+            "max": 20
+        }],
+        "series": [{
+            "data": @Html.Raw(JsonSerializer.Serialize(Model.Days.Select(x => Math.Round(x.Sold, 1)))),
+            "type": "bar",
+            "showSymbol": false,
+            "lineStyle": {
+                "width": 0
+            },
+            "color": "#7bc043"
+        }, {
+            "data": @Html.Raw(JsonSerializer.Serialize(Model.Days.Select(x => -Math.Round(x.Consumption, 1)))),
+            "type": "bar",
+            "showSymbol": false,
+            "lineStyle": {
+                "width": 0
+            },
+            "color": "#ee4035"
+        }, {
+            "data": @Html.Raw(JsonSerializer.Serialize(Model.Days.Select(x => Math.Round(x.Price, 1)))),
+            "type": "line",
+            "smooth": true,
+            "lineStyle": {
+                "width": 3,
+                "color": "#000"
+            },
+            "showSymbol": false,
+            "yAxisIndex": 1
+        }]
+    }
+    echarts.init(document.getElementById('productionChart')).setOption(options);
+</script>
