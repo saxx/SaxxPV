@@ -16,12 +16,12 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-app.UseStatusCodePages();
-app.UseHsts();
 app.UseHttpsRedirection();
+app.UseHsts();
+app.UseStatusCodePages();
+app.UseDeveloperExceptionPage();
 app.UseStaticFiles();
 app.UseRouting();
-app.MapDefaultControllerRoute();
 app.UseRequestLocalization(new RequestLocalizationOptions
 {
     SupportedCultures = new List<CultureInfo>
@@ -29,4 +29,5 @@ app.UseRequestLocalization(new RequestLocalizationOptions
         new("en-GB")
     }
 });
+app.MapDefaultControllerRoute();
 app.Run();
