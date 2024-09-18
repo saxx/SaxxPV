@@ -11,9 +11,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env: # Or as an environment variable
-      tables__connectionstring: ${{ secrets.tables__connectionstring }}
-      sems__username: ${{ secrets.sems__username }}
-      sems__password: ${{ secrets.sems__password }}
+      Tables__ConnectionString: ${{ secrets.TABLES__CONNECTIONSTRING }}
+      Sems__Username: ${{ secrets.SEMS__USERNAME }}
+      Sems__Password: ${{ secrets.SEMS_PASSWORD }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3

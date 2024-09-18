@@ -16,6 +16,9 @@ public class SemsClient : IDisposable
 
     public async Task<AuthenticationResult> Authenticate(string username, string password)
     {
+        if (string.IsNullOrWhiteSpace(username)) throw new Exception("No username provided.");
+        if (string.IsNullOrWhiteSpace(password)) throw new Exception("No password provided.");
+
         var response = await _client.PostAsJsonAsync("api/v1/Common/CrossLogin", new
         {
             account = username,
