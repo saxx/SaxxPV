@@ -6,7 +6,6 @@ public class CurrentDataResult
 {
     [JsonPropertyName("hasError")] public bool? HasError { get; set; }
     [JsonPropertyName("msg")] public string? Message { get; set; }
-    [JsonPropertyName("code")] public string? Code { get; set; }
     [JsonPropertyName("data")] public DataContainer? Data { get; set; }
 
     public class DataContainer

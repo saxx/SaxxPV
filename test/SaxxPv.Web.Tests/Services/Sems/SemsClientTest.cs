@@ -5,7 +5,7 @@ namespace SaxxPv.Web.Tests.Services.Sems;
 
 public class SemsClientTest
 {
-    [Fact]
+    [Fact(Skip = "Skip in pipeline.")]
     public async Task Can_Authenticate()
     {
         var semsOptions = Mock.SemsOptions.Value;
@@ -15,7 +15,7 @@ public class SemsClientTest
         Assert.NotEmpty(authenticationResult.Data!.Token!);
     }
 
-    [Fact(Skip = "Skip in pipeline..")]
+    [Fact(Skip = "Skip in pipeline.")]
     public async Task Can_Fetch_Plants()
     {
         var semsOptions = Mock.SemsOptions.Value;
