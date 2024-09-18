@@ -21,7 +21,6 @@ public class SemsRow
         CurrentGrid = GetValue(entity, "CurrentGrid");
         CurrentBattery = GetValue(entity, "CurrentBattery");
         CurrentBatterySoc = GetValue(entity, "CurrentBatterySoc");
-        CurrentGridStatus = (int) GetValue(entity, "CurrentGridStatus");
 
         DayTotal = GetValue(entity, "DayTotal");
         DayBought = GetValue(entity, "DayBought");
@@ -51,7 +50,6 @@ public class SemsRow
             ["CurrentGrid"] = CurrentGrid,
             ["CurrentBattery"] = CurrentBattery,
             ["CurrentBatterySoc"] = CurrentBatterySoc,
-            ["CurrentGridStatus"] = CurrentGridStatus,
 
             ["DayTotal"] = DayTotal,
             ["DayBought"] = DayBought,
@@ -70,7 +68,6 @@ public class SemsRow
     public double CurrentGrid { get; set; }
     public double CurrentBattery { get; set; }
     public double CurrentBatterySoc { get; set; }
-    public int CurrentGridStatus { get; set; }
 
     public double DayTotal { get; set; }
     public double DayBought { get; set; }

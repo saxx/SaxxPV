@@ -27,7 +27,6 @@ public class SemsToTableService
             CurrentGrid = ParseWatts(data.Data.Current.Grid) ?? 0,
             CurrentBattery = ParseWatts(data.Data.Current.Battery) ?? 0,
             CurrentBatterySoc = data.Data.Current.Soc ?? 0,
-            CurrentGridStatus = (data.Data.Current.GridStatus ?? 0) + 1, // increase by one so that "0" means "don't know" instead of "not working". Now, 1=NotWorking and 2=Working (I hope, need to test actual grid failure)
 
             DayTotal = data.Data.Today.Sum ?? 0,
             DayBought = data.Data.Today.Buy ?? 0,
