@@ -8,10 +8,14 @@
     @Model.Day.ToString("dddd, dd. MMMM yyyy")
     <i class="fad fa-cloud-sun"></i>
 </h1>
-<h2>
-    <i class="fad fa-hourglass-clock"></i>
-    @DateTime.UtcNow.UtcToCet().ToString("HH:mm")
-</h2>
+
+@if (Model.IsCurrentDay)
+{
+    <h2>
+        <i class="fad fa-hourglass-clock"></i>
+        @Model.ChartTimes.LastOrDefault()
+    </h2>
+}
 
 <partial name="_Current"/>
 <partial name="_Day"/>
