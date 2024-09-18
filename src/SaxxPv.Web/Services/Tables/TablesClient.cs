@@ -7,14 +7,9 @@ using SaxxPv.Web.Models.Tables;
 
 namespace SaxxPv.Web.Services.Tables;
 
-public class TablesClient
+public class TablesClient(IOptions<TablesOptions> tablesOptions)
 {
-    private readonly TablesOptions _tablesOptions;
-
-    public TablesClient(IOptions<TablesOptions> tablesOptions)
-    {
-        _tablesOptions = tablesOptions.Value;
-    }
+    private readonly TablesOptions _tablesOptions = tablesOptions.Value;
 
     public IList<PricingRow> LoadPricing(ILogger? log)
     {

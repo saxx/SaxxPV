@@ -1,4 +1,4 @@
-﻿@using Adliance.Buddy.DateTime
+﻿@using System.Globalization
 @using System.Text.Json
 @model SaxxPv.Web.ViewModels.Home.DayViewModel
 
@@ -6,18 +6,29 @@
 <script>
     const options = {
         "grid": {
-            "left": 25,
+            "left": 35,
             "top": 25,
-            "right": 15,
+            "right": 35,
             "bottom": 20
         },
         "xAxis": {
             "type": "category",
             "data": @Html.Raw(JsonSerializer.Serialize(Model.ChartTimes))
         },
-        "yAxis": {
-            "type": "value"
-        },
+        "yAxis": [
+            {
+                type: "value",
+                axisLabel: {
+                    formatter: "{value}"
+                }
+            },
+            {
+                type: "value",
+                axisLabel: {
+                    formatter: "{value}%"
+                }
+            }
+        ],
         "series": [{
             "data": @Html.Raw(JsonSerializer.Serialize(Model.ChartPv)),
             "type": "line",
@@ -60,7 +71,17 @@
                 "color": "#000"
             },
             "showSymbol": false
-        }]
+        }, {
+                "data": @Html.Raw(JsonSerializer.Serialize(Model.ChartBatterySoc)),
+                "type": "line",
+                "smooth": true,
+                "yAxisIndex": 1,
+                "lineStyle": {
+                    "width": 2,
+                    "color": "#aaa"
+                },
+                "showSymbol": false
+            }]
     }
     echarts.init(document.getElementById("productionChart")).setOption(options);
 </script>

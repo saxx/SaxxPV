@@ -1,7 +1,7 @@
 name: SaxxPV Pipeline
 
 env:
-  VERSION: 1.0.0.${{ github.run_number }}
+  VERSION: 1.1.0.${{ github.run_number }}
 
 on:
   push:
@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     env: # Or as an environment variable
       tables__connectionstring: ${{ secrets.tables__connectionstring }}
+      sems__username: ${{ secrets.sems__username }}
+      sems__password: ${{ secrets.sems__password }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3

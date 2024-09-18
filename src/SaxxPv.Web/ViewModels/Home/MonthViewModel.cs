@@ -4,22 +4,11 @@ using SaxxPv.Web.Services.Tables;
 
 namespace SaxxPv.Web.ViewModels.Home;
 
-public class MonthViewModelFactory
+public class MonthViewModelFactory(ILogger<DayViewModelFactory> logger, TablesClient tableClient, PricingService pricingService)
 {
-    private readonly ILogger<DayViewModelFactory> _logger;
-    private readonly TablesClient _tableClient;
-    private readonly PricingService _pricingService;
-
-    public MonthViewModelFactory(ILogger<DayViewModelFactory> logger, TablesClient tableClient, PricingService pricingService)
-    {
-        _logger = logger;
-        _tableClient = tableClient;
-        _pricingService = pricingService;
-    }
-
     public async Task<MonthViewModel> Build(DateOnly day)
     {
-        var rows = _tableClient.LoadSemsForMonth(day, _logger);
+        var rows = tableClient.LoadSemsForMonth(day, logger);
 
         await Task.CompletedTask;
         var result = new MonthViewModel(day)
@@ -42,8 +31,8 @@ public class MonthViewModelFactory
                 dayRow.Bought = r.DayBought;
                 dayRow.Consumption = r.DayConsumption;
                 dayRow.Sold = r.DaySold;
-                dayRow.Price = -_pricingService.CalculateBuyPrice(new DateOnly(r.DateTime.Year, r.DateTime.Month, r.DateTime.Day), dayRow.Bought) +
-                               _pricingService.CalculateSellPrice(new DateOnly(r.DateTime.Year, r.DateTime.Month, r.DateTime.Day), dayRow.Sold);
+                dayRow.Price = -pricingService.CalculateBuyPrice(new DateOnly(r.DateTime.Year, r.DateTime.Month, r.DateTime.Day), dayRow.Bought) +
+                               pricingService.CalculateSellPrice(new DateOnly(r.DateTime.Year, r.DateTime.Month, r.DateTime.Day), dayRow.Sold);
             }
         }
 
@@ -52,14 +41,9 @@ public class MonthViewModelFactory
     }
 }
 
-public class MonthViewModel
+public class MonthViewModel(DateOnly day)
 {
-    public MonthViewModel(DateOnly day)
-    {
-        Day = day;
-    }
-
-    public DateOnly Day { get; }
+    public DateOnly Day { get; } = day;
 
     public bool IsCurrentMonth
     {

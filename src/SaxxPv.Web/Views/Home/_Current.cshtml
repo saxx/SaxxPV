@@ -33,5 +33,15 @@
             <b>+ @((Model.CurrentGrid / 1000d)?.ToString("N1")) kW</b>
             <small>(+@Model.CurrentGridPrice?.ToString("N2") €/h)</small>
         }
+
+        <br/>
+        <i class="fad fa-solar-panel"></i>
+        <i class="fad fa-arrow-right-long"></i>
+        <i class="fad fa-battery"></i>
+        @(Model.CurrentBattery?.ToString("N1")) kW/h
+
+        <br/>
+        <i class="fad fa-battery"></i>
+        @(Model.CurrentBatterySoc?.ToString("N0")) %
     </div>
 }

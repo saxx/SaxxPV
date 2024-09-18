@@ -3,22 +3,13 @@ using SaxxPv.Web.Services.Tables;
 
 namespace SaxxPv.Web.Services;
 
-public class PricingService
+public class PricingService(ILogger<PricingService> logger, TablesClient tablesClient)
 {
-    private readonly ILogger<PricingService> _logger;
-    private readonly TablesClient _tablesClient;
-
-    public PricingService(ILogger<PricingService> logger, TablesClient tablesClient)
-    {
-        _logger = logger;
-        _tablesClient = tablesClient;
-    }
-
     private IList<PricingRow>? _pricingRows;
 
     public PricingRow LoadPricingEntry(DateOnly day)
     {
-        if (_pricingRows == null) _pricingRows = _tablesClient.LoadPricing(_logger);
+        if (_pricingRows == null) _pricingRows = tablesClient.LoadPricing(logger);
 
         var from = day.ToDateTime(new TimeOnly());
         var to = from;

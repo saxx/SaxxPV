@@ -7,6 +7,7 @@ namespace SaxxPv.Web.Tests;
 public static class Mock
 {
     public static IOptions<TablesOptions> TablesOptions => GetOptions<TablesOptions>("Tables");
+    public static IOptions<SemsOptions> SemsOptions => GetOptions<SemsOptions>("Sems");
 
     private static IOptions<T> GetOptions<T>(string sectionName) where T : class, new()
     {
@@ -15,7 +16,7 @@ public static class Mock
             .AddJsonFile("appsettings.Development.json", optional: true)
             .AddEnvironmentVariables()
             .Build();
-        
+
         var options = new T();
         configuration.Bind(sectionName, options);
         return Options.Create(options);
