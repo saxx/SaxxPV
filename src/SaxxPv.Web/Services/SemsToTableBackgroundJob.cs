@@ -16,7 +16,7 @@ public class SemsToTableBackgroundJob(
     public Task StartAsync(CancellationToken stoppingToken)
     {
         logger.LogInformation("SemsToTableBackgroundJob running.");
-        _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
+        _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(5));
         return Task.CompletedTask;
     }
 

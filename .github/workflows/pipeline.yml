@@ -13,7 +13,7 @@ jobs:
     env: # Or as an environment variable
       Tables__ConnectionString: ${{ secrets.TABLES__CONNECTIONSTRING }}
       Sems__Username: ${{ secrets.SEMS__USERNAME }}
-      Sems__Password: ${{ secrets.SEMS_PASSWORD }}
+      Sems__Password: ${{ secrets.SEMS__PASSWORD }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
