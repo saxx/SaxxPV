@@ -15,7 +15,7 @@ public class SemsClientTest
         Assert.NotEmpty(authenticationResult.Data!.Token!);
     }
 
-    [Fact]
+    [Fact(Skip = "Skip in pipeline..")]
     public async Task Can_Fetch_Plants()
     {
         var semsOptions = Mock.SemsOptions.Value;
