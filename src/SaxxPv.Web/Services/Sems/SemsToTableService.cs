@@ -35,6 +35,8 @@ public class SemsToTableService
             DaySelfUse = data.Data.Today.SelfUseOfPv ?? 0,
         };
 
+        if (data.Data.Current.BatteryStatus < 0) semsEntry.CurrentBattery *= -1;
+
         await tablesClient.AddEntityAsync(semsEntry.ToTableEntity());
         return;
 

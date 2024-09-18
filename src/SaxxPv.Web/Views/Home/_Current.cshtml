@@ -1,4 +1,5 @@
-﻿@model SaxxPv.Web.ViewModels.Home.DayViewModel
+﻿@using System.Globalization
+@model SaxxPv.Web.ViewModels.Home.DayViewModel
 
 @if (Model.IsCurrentDay)
 {
@@ -30,15 +31,25 @@
             <i class="fad fa-solar-panel fa-beat-fade"></i>
             <i class="fad fa-arrow-right-long fa-beat"></i>
             <i class="fad fa-utility-pole-double fa-beat-fade"></i>
-            <b>+ @((Model.CurrentGrid / 1000d)?.ToString("N1")) kW</b>
+            <b>+@((Model.CurrentGrid / 1000d)?.ToString("N1")) kW</b>
             <small>(+@Model.CurrentGridPrice?.ToString("N2") €/h)</small>
         }
 
         <br/>
-        <i class="fad fa-solar-panel"></i>
-        <i class="fad fa-arrow-right-long"></i>
-        <i class="fad fa-battery"></i>
-        @(Model.CurrentBattery?.ToString("N1")) kW/h
+        @if (Model.CurrentBattery <= 0)
+        {
+            <i class="fad fa-battery"></i>
+            <i class="fad fa-arrow-right-long"></i>
+            <i class="fad fa-house"></i>
+            <b>@((Model.CurrentBattery / 1000d)?.ToString("N1")) kW</b>
+        }
+        else
+        {
+            <i class="fad fa-solar-panel"></i>
+            <i class="fad fa-arrow-right-long"></i>
+            <i class="fad fa-battery"></i>
+            <b>+@((Model.CurrentBattery / 1000d)?.ToString("N1")) kW</b>
+        }
 
         <br/>
         <i class="fad fa-battery"></i>
