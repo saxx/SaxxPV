@@ -13,7 +13,7 @@ public class MonthViewModelFactory(ILogger<DayViewModelFactory> logger, TablesCl
         await Task.CompletedTask;
         var result = new MonthViewModel(day)
         {
-            SemsCounts = rows.Count,
+            SemsCounts = rows.Count
         };
 
         foreach (var r in rows)
@@ -22,6 +22,8 @@ public class MonthViewModelFactory(ILogger<DayViewModelFactory> logger, TablesCl
             if (dayRow == null)
             {
                 dayRow = new MonthViewModel.DayDetails();
+                dayRow.BatterySocMin = double.MaxValue;
+                dayRow.BatterySocMax = double.MinValue;
                 result.Days.Add(dayRow);
             }
 
@@ -34,6 +36,10 @@ public class MonthViewModelFactory(ILogger<DayViewModelFactory> logger, TablesCl
                 dayRow.Price = -pricingService.CalculateBuyPrice(new DateOnly(r.DateTime.Year, r.DateTime.Month, r.DateTime.Day), dayRow.Bought) +
                                pricingService.CalculateSellPrice(new DateOnly(r.DateTime.Year, r.DateTime.Month, r.DateTime.Day), dayRow.Sold);
             }
+
+            if (dayRow.BatterySocMin > r.CurrentBatterySoc) dayRow.BatterySocMin = r.CurrentBatterySoc;
+            if (dayRow.BatterySocMax < r.CurrentBatterySoc) dayRow.BatterySocMax = r.CurrentBatterySoc;
+
         }
 
         result.Days = result.Days.OrderBy(x => x.DateTime).ToList();
@@ -65,5 +71,7 @@ public class MonthViewModel(DateOnly day)
         public double Sold { get; set; }
         public double Bought { get; set; }
         public double Price { get; set; }
+        public double BatterySocMin { get; set; }
+        public double BatterySocMax { get; set; }
     }
 }
