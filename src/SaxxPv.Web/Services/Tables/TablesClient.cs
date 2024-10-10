@@ -46,7 +46,12 @@ public class TablesClient(IOptions<TablesOptions> tablesOptions)
         var semsEntries = rows.Select(x => new SemsRow(x)).ToList();
 
         // ignore all entries that have no values at all, this is usually because of down internet connection and no values were pushed from inverter to SEMS
-        semsEntries = semsEntries.Where(x => x.CurrentBattery > 0 || x.CurrentGrid > 0 || x.CurrentPv > 0 || x.CurrentLoad > 0 || x.CurrentBatterySoc > 0).ToList();
+        semsEntries = semsEntries.Where(x =>
+            x.CurrentBattery > 0
+            || x.CurrentGrid > 0
+            || x.CurrentPv > 0
+            || x.CurrentLoad > 0
+            || x.CurrentBatterySoc > 0).ToList();
 
         return semsEntries;
     }

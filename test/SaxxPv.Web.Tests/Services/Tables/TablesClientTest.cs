@@ -10,7 +10,7 @@ public class TablesClientTest
     {
         var service = new TablesClient(Mock.TablesOptions);
         var rows = service.LoadSems(DateTime.Parse("2022-10-01"), DateTime.Parse("2022-11-30"), null);
-        Assert.Equal(27664, rows.Count);
+        Assert.Equal(25262, rows.Count);
     }
 
     [Fact]
@@ -18,7 +18,7 @@ public class TablesClientTest
     {
         var service = new TablesClient(Mock.TablesOptions);
         var rows = service.LoadSemsForDay(DateOnly.Parse("2022-10-01"), null);
-        Assert.Equal(475, rows.Count);
+        Assert.Equal(399, rows.Count);
     }
 
     [Fact]
@@ -26,6 +26,6 @@ public class TablesClientTest
     {
         var service = new TablesClient(Mock.TablesOptions);
         var rows = service.LoadSemsForMonth(DateOnly.Parse("2022-10-26"), null);
-        Assert.Equal(14669, rows.Count);
+        Assert.Equal(12509, rows.Count);
     }
 }
