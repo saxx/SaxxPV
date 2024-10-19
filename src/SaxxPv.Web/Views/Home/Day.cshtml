@@ -3,15 +3,12 @@
 @model SaxxPv.Web.ViewModels.Home.DayViewModel
 
 <h1 style="padding: 1rem;">
-    <i class="fad fa-sun"></i>
     @Model.Day.ToString("dddd, dd. MMMM yyyy")
-    <i class="fad fa-cloud-sun"></i>
 </h1>
 
 @if (Model.IsCurrentDay)
 {
     <h2 style="margin-top: -1rem; padding: 0 0 1rem;">
-        <i class="fad fa-hourglass-clock"></i>
         @Model.ChartTimes.LastOrDefault()
     </h2>
 }
