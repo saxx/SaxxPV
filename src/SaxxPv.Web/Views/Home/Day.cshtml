@@ -1,9 +1,8 @@
-﻿@using Adliance.Buddy.DateTime
-@using System.Globalization
+﻿@using System.Globalization
 @using SaxxPv.Web.Controllers
 @model SaxxPv.Web.ViewModels.Home.DayViewModel
 
-<h1>
+<h1 style="padding: 1rem;">
     <i class="fad fa-sun"></i>
     @Model.Day.ToString("dddd, dd. MMMM yyyy")
     <i class="fad fa-cloud-sun"></i>
@@ -11,7 +10,7 @@
 
 @if (Model.IsCurrentDay)
 {
-    <h2>
+    <h2 style="margin-top: -1rem; padding: 0 0 1rem;">
         <i class="fad fa-hourglass-clock"></i>
         @Model.ChartTimes.LastOrDefault()
     </h2>

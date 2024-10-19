@@ -1,36 +1,30 @@
-﻿@using System.Globalization
-@model SaxxPv.Web.ViewModels.Home.DayViewModel
+﻿@model SaxxPv.Web.ViewModels.Home.DayViewModel
 
 @if (Model.IsCurrentDay)
 {
     <div style="margin-top:1rem; text-align:center;">
         <h3>Currently</h3>
-        <i class="fad fa-lightbulb-on fa-beat-fade"></i>
+        <i class="fad fa-lightbulb-on @(Model.CurrentLoad >= 100 ? "fa-beat-fade" : "")"></i>
         -@((Model.CurrentLoad / 1000d)?.ToString("N1")) kW
         <br/>
-        <i class="fad fa-solar-panel fa-beat-fade"></i>
+
+        <i class="fad fa-solar-panel @(Model.CurrentPv  >= 100 ? "fa-beat-fade" : "")"></i>
         +@((Model.CurrentPv / 1000d)?.ToString("N1")) kW
         <br/>
 
-        <!--
-        <i class="fad fa-car-bolt"></i>
-        No data
-        <br/>
-        -->
-
         @if (Model.CurrentGrid <= 0)
         {
-            <i class="fad fa-utility-pole-double fa-beat-fade"></i>
-            <i class="fad fa-arrow-right-long fa-beat"></i>
-            <i class="fad fa-house fa-beat-fade"></i>
+            <i class="fad fa-utility-pole-double @(Model.CurrentGrid < 100 ? "fa-beat-fade" : "")"></i>
+            <i class="fad fa-arrow-right-long @(Model.CurrentGrid < 100 ? "fa-beat" : "")"></i>
+            <i class="fad fa-house @(Model.CurrentGrid < 100 ? "fa-beat-fade" : "")"></i>
             <b>@((Model.CurrentGrid / 1000d)?.ToString("N1")) kW</b>
             <small>(@Model.CurrentGridPrice?.ToString("N2") €/h)</small>
         }
         else
         {
-            <i class="fad fa-solar-panel fa-beat-fade"></i>
-            <i class="fad fa-arrow-right-long fa-beat"></i>
-            <i class="fad fa-utility-pole-double fa-beat-fade"></i>
+            <i class="fad fa-solar-panel @(Model.CurrentGrid >= 100 ? "fa-beat-fade" : "")"></i>
+            <i class="fad fa-arrow-right-long @(Model.CurrentGrid >= 100 ? "fa-beat" : "")"></i>
+            <i class="fad fa-utility-pole-double @(Model.CurrentGrid >= 100 ? "fa-beat-fade" : "")"></i>
             <b>+@((Model.CurrentGrid / 1000d)?.ToString("N1")) kW</b>
             <small>(+@Model.CurrentGridPrice?.ToString("N2") €/h)</small>
         }
@@ -38,16 +32,16 @@
         <br/>
         @if (Model.CurrentBattery <= 0)
         {
-            <i class="fad fa-battery"></i>
-            <i class="fad fa-arrow-right-long"></i>
-            <i class="fad fa-house"></i>
+            <i class="fad fa-battery @(Model.CurrentBattery < 100 ? "fa-beat-fade" : "")"></i>
+            <i class="fad fa-arrow-right-long @(Model.CurrentBattery < 100 ? "fa-beat" : "")"></i>
+            <i class="fad fa-house @(Model.CurrentBattery < 100 ? "fa-beat-fade" : "")"></i>
             <b>@((Model.CurrentBattery / 1000d)?.ToString("N1")) kW</b>
         }
         else
         {
-            <i class="fad fa-solar-panel"></i>
-            <i class="fad fa-arrow-right-long"></i>
-            <i class="fad fa-battery"></i>
+            <i class="fad fa-solar-panel @(Model.CurrentBattery >= 100 ? "fa-beat-fade" : "")"></i>
+            <i class="fad fa-arrow-right-long @(Model.CurrentBattery >= 100 ? "fa-beat" : "")"></i>
+            <i class="fad fa-battery @(Model.CurrentBattery >= 100 ? "fa-beat-fade" : "")"></i>
             <b>+@((Model.CurrentBattery / 1000d)?.ToString("N1")) kW</b>
         }
 
