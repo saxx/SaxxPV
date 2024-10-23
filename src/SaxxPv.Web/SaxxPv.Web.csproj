@@ -8,10 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="wwwroot\lib" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="Adliance.AspNetCore.Buddy" Version="8.0.0.4" />
       <PackageReference Include="Adliance.Buddy.CodeStyle" Version="8.0.0.8" />
       <PackageReference Include="Adliance.Buddy.DateTime" Version="8.0.0.4" />

@@ -8,7 +8,6 @@
         <th style="text-align:right; width:85px;">Used</th>
         <th style="text-align:right; width:85px;">Sold</th>
         <th style="text-align:right; width:85px;">Bought</th>
-        <th style="text-align:right; width:85px;">Income</th>
         <th style="text-align:right; width:85px;">Battery</th>
     </tr>
     </thead>
@@ -25,7 +24,6 @@
             <td style="text-align:right;">@(d.Consumption.ToString("N1"))</td>
             <td style="text-align:right;">@(d.Sold.ToString("N1"))</td>
             <td style="text-align:right;">@(d.Bought.ToString("N1"))</td>
-            <td style="text-align:right;">@(d.Price.ToString("N2")) €</td>
             <td style="text-align:right;">
                 @if (d.BatterySocMin > 0 || d.BatterySocMax > 0)
                 {

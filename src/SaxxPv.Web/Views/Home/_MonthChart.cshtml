@@ -41,16 +41,6 @@
                 "width": 0
             },
             "color": "#ee4035"
-        }, {
-            "data": @Html.Raw(JsonSerializer.Serialize(Model.Days.Select(x => Math.Round(x.Price, 1)))),
-            "type": "line",
-            "smooth": true,
-            "lineStyle": {
-                "width": 3,
-                "color": "#000"
-            },
-            "showSymbol": false,
-            "yAxisIndex": 1
         }]
     }
     echarts.init(document.getElementById('productionChart')).setOption(options);

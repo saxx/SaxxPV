@@ -53,15 +53,6 @@
                 "color": "#ee4035",
                 "opacity": 0.5
             }
-        /*}, {
-            "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            "type": "line",
-            "smooth": true,
-            "lineStyle": {
-                "width": 1,
-                "color": "#0392cf"
-            },
-            "showSymbol": false*/
         }, {
             "data": @Html.Raw(JsonSerializer.Serialize(Model.ChartGrid)),
             "type": "line",
@@ -72,16 +63,16 @@
             },
             "showSymbol": false
         }, {
-                "data": @Html.Raw(JsonSerializer.Serialize(Model.ChartBatterySoc)),
-                "type": "line",
-                "smooth": true,
-                "yAxisIndex": 1,
-                "lineStyle": {
-                    "width": 2,
-                    "color": "#aaa"
-                },
-                "showSymbol": false
-            }]
+            "data": @Html.Raw(JsonSerializer.Serialize(Model.ChartBatterySoc)),
+            "type": "line",
+            "smooth": true,
+            "yAxisIndex": 1,
+            "lineStyle": {
+                "width": 2,
+                "color": "#aaa"
+            },
+            "showSymbol": false
+        }]
     }
     echarts.init(document.getElementById("productionChart")).setOption(options);
 </script>
