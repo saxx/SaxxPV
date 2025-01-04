@@ -1,16 +1,21 @@
 using Adliance.Buddy.DateTime;
+using Microsoft.EntityFrameworkCore;
+using SaxxPv.Web.Models.Database;
 using SaxxPv.Web.Services;
-using SaxxPv.Web.Services.Tables;
 
 namespace SaxxPv.Web.ViewModels.Home;
 
-public class MonthViewModelFactory(ILogger<DayViewModelFactory> logger, TablesClient tableClient, PricingService pricingService)
+public class MonthViewModelFactory(Db db, PricingService pricingService)
 {
     public async Task<MonthViewModel> Build(DateOnly day)
     {
-        var rows = tableClient.LoadSemsForMonth(day, logger);
+        var min = new DateTime(day.Year, day.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+        var max = min.AddMonths(1);
 
-        await Task.CompletedTask;
+        var rows = await db.Readings
+            .AsNoTracking()
+            .Where(x => x.DateTime >= min && x.DateTime < max)
+            .ToListAsync();
         var result = new MonthViewModel(day)
         {
             SemsCounts = rows.Count
@@ -21,9 +26,11 @@ public class MonthViewModelFactory(ILogger<DayViewModelFactory> logger, TablesCl
             var dayRow = result.Days.SingleOrDefault(x => x.DateTime.Date == r.DateTime.Date);
             if (dayRow == null)
             {
-                dayRow = new MonthViewModel.DayDetails();
-                dayRow.BatterySocMin = double.MaxValue;
-                dayRow.BatterySocMax = double.MinValue;
+                dayRow = new MonthViewModel.DayDetails
+                {
+                    BatterySocMin = double.MaxValue,
+                    BatterySocMax = double.MinValue
+                };
                 result.Days.Add(dayRow);
             }
 
@@ -33,13 +40,12 @@ public class MonthViewModelFactory(ILogger<DayViewModelFactory> logger, TablesCl
                 dayRow.Bought = r.DayBought;
                 dayRow.Consumption = r.DayConsumption;
                 dayRow.Sold = r.DaySold;
-                dayRow.Price = -pricingService.CalculateBuyPrice(new DateOnly(r.DateTime.Year, r.DateTime.Month, r.DateTime.Day), dayRow.Bought) +
-                               pricingService.CalculateSellPrice(new DateOnly(r.DateTime.Year, r.DateTime.Month, r.DateTime.Day), dayRow.Sold);
+                dayRow.Price = -await pricingService.CalculateBuyPrice(new DateOnly(r.DateTime.Year, r.DateTime.Month, r.DateTime.Day), dayRow.Bought) +
+                               await pricingService.CalculateSellPrice(new DateOnly(r.DateTime.Year, r.DateTime.Month, r.DateTime.Day), dayRow.Sold);
             }
 
             if (dayRow.BatterySocMin > r.CurrentBatterySoc) dayRow.BatterySocMin = r.CurrentBatterySoc;
             if (dayRow.BatterySocMax < r.CurrentBatterySoc) dayRow.BatterySocMax = r.CurrentBatterySoc;
-
         }
 
         result.Days = result.Days.OrderBy(x => x.DateTime).ToList();
@@ -61,7 +67,7 @@ public class MonthViewModel(DateOnly day)
         }
     }
 
-    public int? SemsCounts { get; set; }
+    public int? SemsCounts { get; init; }
     public IList<DayDetails> Days { get; set; } = new List<DayDetails>();
 
     public class DayDetails

@@ -1,31 +1,33 @@
-using SaxxPv.Web.Models.Tables;
-using SaxxPv.Web.Services.Tables;
+using Microsoft.EntityFrameworkCore;
+using SaxxPv.Web.Models.Database;
 
 namespace SaxxPv.Web.Services;
 
-public class PricingService(ILogger<PricingService> logger, TablesClient tablesClient)
+public class PricingService(Db db)
 {
-    private IList<PricingRow>? _pricingRows;
+    private readonly Dictionary<DateOnly, Pricing> _cache = new();
 
-    public PricingRow LoadPricingEntry(DateOnly day)
+    public async Task<Pricing> LoadPricingEntry(DateOnly day)
     {
-        if (_pricingRows == null) _pricingRows = tablesClient.LoadPricing(logger);
+        if (_cache.TryGetValue(day, out var p)) return p;
 
-        var from = day.ToDateTime(new TimeOnly());
-        var to = from;
-
-        var entry = _pricingRows.FirstOrDefault(x => x.From.Date <= from.Date && x.To.Date.AddDays(1) > to.Date);
-        if (entry == null) return new PricingRow(day.ToDateTime(new TimeOnly()));
-        return entry;
+        var d = day.ToDateTime(new TimeOnly(0, 0), DateTimeKind.Utc);
+        var result = await db.Pricings
+            .AsNoTracking()
+            .OrderByDescending(x => x.From)
+            .FirstOrDefaultAsync(x => d >= x.From && d <= x.To);
+        if (result == null) result = new Pricing();
+        _cache[day] = result;
+        return result;
     }
 
-    public double CalculateBuyPrice(DateOnly day, double kwh)
+    public async Task<double> CalculateBuyPrice(DateOnly day, double kwh)
     {
-        return kwh  * LoadPricingEntry(day).BuyPrice / 100;
+        return kwh * (await LoadPricingEntry(day)).BuyPrice / 100;
     }
 
-    public double CalculateSellPrice(DateOnly day, double kwh)
+    public async Task<double> CalculateSellPrice(DateOnly day, double kwh)
     {
-        return kwh  * LoadPricingEntry(day).SellPrice / 100;
+        return kwh * (await LoadPricingEntry(day)).SellPrice / 100;
     }
 }
