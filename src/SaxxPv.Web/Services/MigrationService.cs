@@ -91,11 +91,13 @@ public class MigrationService(IServiceProvider services)
 
                 if (oldReading == null || !newReading.Equals(oldReading))
                 {
-                    inserted++;
-                    db.Readings.Add(newReading);
+                    if (oldReading == null || newReading.DateTime != oldReading.DateTime)
+                    {
+                        db.Readings.Add(newReading);
+                        await db.SaveChangesAsync();
+                        inserted++;
+                    }
                 }
-
-                await db.SaveChangesAsync();
             }
 
             context.WriteLine($"\t\t{inserted} rows inserted.");
