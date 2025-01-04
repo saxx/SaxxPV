@@ -9,7 +9,7 @@ public class DayViewModelFactory(Db db, PricingService pricingService)
 {
     public async Task<DayViewModel> Build(DateOnly day)
     {
-        var min = day.ToDateTime(new TimeOnly(0, 0), DateTimeKind.Utc).AddHours(-2);
+        var min = day.ToDateTime(new TimeOnly(0, 0)).CetToUtc();
         var max = min.AddDays(1);
 
         var rows = await db.Readings

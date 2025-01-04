@@ -9,7 +9,7 @@ public class MonthViewModelFactory(Db db, PricingService pricingService)
 {
     public async Task<MonthViewModel> Build(DateOnly day)
     {
-        var min = new DateTime(day.Year, day.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+        var min = day.ToDateTime(new TimeOnly(0, 0)).CetToUtc();
         var max = min.AddMonths(1);
 
         var rows = await db.Readings
