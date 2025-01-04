@@ -36,11 +36,6 @@
 @if (Model.SemsCounts.HasValue)
 {
     <div style="margin-top:32px; text-align:right; font-size:12px; line-height:14px;">
-
-        @Model.SemsCounts?.ToString("N0", CultureInfo.CurrentCulture) data points, last update at @Model.LastSemsDateTime?.ToString("HH:mm").
-
-        <!--<br/>
-        NRGKick: 0 data points, last update at .
-        <br/>-->
+        <a href="/hangfire" style="text-decoration: none; color: #999;">@Model.SemsCounts?.ToString("N0", CultureInfo.CurrentCulture) data points, last update at @Model.LastSemsDateTime?.ToString("HH:mm")</a>
     </div>
 }
