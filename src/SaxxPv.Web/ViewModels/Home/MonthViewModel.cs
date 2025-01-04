@@ -10,7 +10,7 @@ public class MonthViewModelFactory(Db db, PricingService pricingService)
     public async Task<MonthViewModel> Build(DateOnly day)
     {
         var min = new DateTime(day.Year, day.Month, 1, 0, 0, 0, DateTimeKind.Unspecified).CetToUtc();
-        var max = min.AddMonths(1);
+        var max = new DateTime(day.Year, day.Month, 1, 0, 0, 0, DateTimeKind.Unspecified).AddMonths(1).CetToUtc();
 
         var rows = await db.Readings
             .AsNoTracking()
@@ -23,7 +23,9 @@ public class MonthViewModelFactory(Db db, PricingService pricingService)
 
         foreach (var r in rows)
         {
-            var dayRow = result.Days.SingleOrDefault(x => x.DateTime.Date == r.DateTime.Date);
+            var dateTime = r.DateTime.UtcToCet();
+
+            var dayRow = result.Days.SingleOrDefault(x => x.DateTime.Date == dateTime.Date);
             if (dayRow == null)
             {
                 dayRow = new MonthViewModel.DayDetails
@@ -36,7 +38,7 @@ public class MonthViewModelFactory(Db db, PricingService pricingService)
 
             if (dayRow.DateTime <= r.DateTime)
             {
-                dayRow.DateTime = r.DateTime;
+                dayRow.DateTime = dateTime;
                 dayRow.Bought = r.DayBought;
                 dayRow.Consumption = r.DayConsumption;
                 dayRow.Sold = r.DaySold;
@@ -46,6 +48,8 @@ public class MonthViewModelFactory(Db db, PricingService pricingService)
 
             if (dayRow.BatterySocMin > r.CurrentBatterySoc) dayRow.BatterySocMin = r.CurrentBatterySoc;
             if (dayRow.BatterySocMax < r.CurrentBatterySoc) dayRow.BatterySocMax = r.CurrentBatterySoc;
+
+            dayRow.DataPoints++;
         }
 
         result.Days = result.Days.OrderBy(x => x.DateTime).ToList();
@@ -79,5 +83,6 @@ public class MonthViewModel(DateOnly day)
         public double Price { get; set; }
         public double BatterySocMin { get; set; }
         public double BatterySocMax { get; set; }
+        public int DataPoints { get; set; }
     }
 }

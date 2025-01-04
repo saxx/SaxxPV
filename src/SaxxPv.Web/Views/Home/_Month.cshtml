@@ -18,8 +18,8 @@
     {
         <tr>
             <td>
-                <a asp-action="@nameof(HomeController.Day)" asp-route-day="@d.DateTime.ToString("yyyy-MM-dd")">
-                    @d.DateTime.UtcToCet().ToString("dddd, dd.MM.")
+                <a asp-action="@nameof(HomeController.Day)" asp-route-day="@d.DateTime.ToString("yyyy-MM-dd")" title="@d.DataPoints readings">
+                    @d.DateTime.ToString("dddd, dd.MM.")
                 </a>
             </td>
             <td style="text-align:right;">@(d.Consumption.ToString("N1"))</td>
