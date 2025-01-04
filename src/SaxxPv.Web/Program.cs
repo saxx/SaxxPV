@@ -31,6 +31,7 @@ builder.Services.AddHangfireServer(x =>
 {
     x.WorkerCount = 1;
 });
+builder.Services.AddHealthChecks().AddDbContextCheck<Db>();
 
 var app = builder.Build();
 
@@ -54,6 +55,7 @@ app.UseRequestLocalization(new RequestLocalizationOptions
     }
 });
 app.MapDefaultControllerRoute();
+app.MapHealthChecks("/health");
 app.UseHangfireDashboard("/hangfire", new DashboardOptions());
 RecurringJob.AddOrUpdate("Fetch_Reading", () => new SemsToDbBackgroundJob(app.Services).Run(null!), Cron.Minutely);
 RecurringJob.AddOrUpdate("Migrate_Pricing", () => new MigrationService(app.Services).MigratePricingData(null!), Cron.Never);
