@@ -6,10 +6,10 @@
     @Model.Day.ToString("dddd, dd. MMMM yyyy")
 </h1>
 
-@if (Model.IsCurrentDay)
+@if (Model.IsCurrentDay && Model.ChartGrid.Any())
 {
     <h2 style="margin-top: -1rem; padding: 0 0 1rem;">
-        @Model.ChartTimes.LastOrDefault()
+        @Model.ChartGrid.LastOrDefault().Key.ToString("HH:mm")
     </h2>
 }
 

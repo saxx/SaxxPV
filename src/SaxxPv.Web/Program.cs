@@ -1,7 +1,6 @@
 using System.Globalization;
 using Hangfire;
 using Hangfire.Console;
-using Hangfire.Dashboard;
 using Microsoft.EntityFrameworkCore;
 using SaxxPv.Web;
 using SaxxPv.Web.Models.Database;

@@ -1,4 +1,3 @@
-using System.Globalization;
 using Adliance.Buddy.DateTime;
 using Microsoft.EntityFrameworkCore;
 using SaxxPv.Web.Models.Database;
@@ -10,17 +9,17 @@ public class DayViewModelFactory(Db db, PricingService pricingService)
 {
     public async Task<DayViewModel> Build(DateOnly day)
     {
-        var min = day.ToDateTime(new TimeOnly(0, 0), DateTimeKind.Utc);
+        var min = day.ToDateTime(new TimeOnly(0, 0), DateTimeKind.Utc).AddHours(-2);
         var max = min.AddDays(1);
 
         var rows = await db.Readings
             .AsNoTracking()
             .Where(x => x.DateTime >= min && x.DateTime < max)
             .ToListAsync();
+
         var currentReading = rows.MaxBy(x => x.DateTime);
         if (currentReading == null) return new DayViewModel(day);
 
-        await Task.CompletedTask;
         return new DayViewModel(day)
         {
             CurrentGrid = currentReading.CurrentGrid,
@@ -37,11 +36,10 @@ public class DayViewModelFactory(Db db, PricingService pricingService)
                 : await pricingService.CalculateBuyPrice(day, currentReading.CurrentGrid / 1000d),
             DayBoughtPrice = await pricingService.CalculateBuyPrice(day, currentReading.DayBought),
             DaySoldPrice = await pricingService.CalculateSellPrice(day, currentReading.DaySold),
-            ChartTimes = rows.Select(x => x.DateTime.ToString("HH:mm", CultureInfo.CurrentCulture)).ToList(),
-            ChartPv = rows.Select(x => Math.Round(x.CurrentPv / 1000d, 1)).ToList(),
-            ChartLoad = rows.Select(x => Math.Round(-x.CurrentLoad / 1000d, 1)).ToList(),
-            ChartGrid = rows.Select(x => Math.Round(x.CurrentGrid / 1000d, 1)).ToList(),
-            ChartBatterySoc = rows.Select(x => x.CurrentBatterySoc).ToList(),
+            ChartPv = rows.ToDictionary(x => x.DateTime.UtcToCet(), x => Math.Round(x.CurrentPv / 1000d, 1)),
+            ChartLoad = rows.ToDictionary(x => x.DateTime.UtcToCet(), x => Math.Round(-x.CurrentLoad / 1000d, 1)),
+            ChartGrid = rows.ToDictionary(x => x.DateTime.UtcToCet(), x => Math.Round(x.CurrentGrid / 1000d, 1)),
+            ChartBatterySoc = rows.ToDictionary(x => x.DateTime.UtcToCet(), x => x.CurrentBatterySoc),
             DaySelfUse = currentReading.DaySelfUse,
             SemsCounts = rows.Count,
             LastSemsDateTime = currentReading.DateTime
@@ -82,9 +80,8 @@ public class DayViewModel(DateOnly day)
     public double? DaySoldPrice { get; init; }
     public double? DayBoughtPrice { get; init; }
 
-    public IList<string> ChartTimes { get; init; } = new List<string>();
-    public IList<double> ChartPv { get; init; } = new List<double>();
-    public IList<double> ChartLoad { get; init; } = new List<double>();
-    public IList<double> ChartGrid { get; init; } = new List<double>();
-    public IList<double> ChartBatterySoc { get; init; } = new List<double>();
+    public Dictionary<DateTime, double> ChartPv { get; init; } = new();
+    public Dictionary<DateTime, double> ChartLoad { get; init; } = new();
+    public Dictionary<DateTime, double> ChartGrid { get; init; } = new();
+    public Dictionary<DateTime, double> ChartBatterySoc { get; init; } = new();
 }

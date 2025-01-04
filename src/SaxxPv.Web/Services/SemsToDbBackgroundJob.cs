@@ -10,6 +10,8 @@ namespace SaxxPv.Web.Services;
 
 public class SemsToDbBackgroundJob(IServiceProvider services)
 {
+    private static string? _stationIdCache;
+
     public async Task Run(PerformContext? context)
     {
         using var scope = services.CreateScope();
@@ -19,46 +21,60 @@ public class SemsToDbBackgroundJob(IServiceProvider services)
         context.WriteLine("Loading current reading from SEMS ...");
         var semsClient = new Sems.SemsClient();
         await semsClient.Authenticate(semsOptions.Value.Username, semsOptions.Value.Password);
-        var stations = await semsClient.FetchStations();
-        var data = await semsClient.FetchCurrentData(stations.Stations.First().Id!);
-        if (data.Data?.Station?.Id == null) throw new Exception("No station ID available.");
-        if (data.Data?.Today == null) throw new Exception("No data for today available.");
-        if (data.Data?.Current == null) throw new Exception("No current data available.");
 
-        context.WriteLine("Loading previous reading ...");
-        var oldReading = await db.Readings
-            .OrderByDescending(x => x.DateTime)
-            .FirstOrDefaultAsync();
-
-        var newReading = new Reading
+        if (_stationIdCache == null)
         {
-            CurrentLoad = ParseWatts(data.Data.Current.Load) ?? 0,
-            CurrentPv = ParseWatts(data.Data.Current.Pv) ?? 0,
-            CurrentGrid = ParseWatts(data.Data.Current.Grid) ?? 0,
-            CurrentBattery = ParseWatts(data.Data.Current.Battery) ?? 0,
-            CurrentBatterySoc = data.Data.Current.Soc ?? 0,
-
-            DayTotal = data.Data.Today.Sum ?? 0,
-            DayBought = data.Data.Today.Buy ?? 0,
-            DaySold = data.Data.Today.Sell ?? 0,
-            DayConsumption = data.Data.Today.ConsumptionOfLoad ?? 0,
-            DaySelfUse = data.Data.Today.SelfUseOfPv ?? 0,
-
-            DateTime = DateTime.UtcNow
-        };
-
-        if (data.Data.Current.BatteryStatus < 0) newReading.CurrentBattery *= -1;
-
-        if (oldReading == null || !newReading.Equals(oldReading))
-        {
-            context.WriteLine("Saving new reading to database ...");
-            context.WriteLine(newReading.ToString());
-            await db.AddAsync(newReading);
-            await db.SaveChangesAsync();
+            var stations = await semsClient.FetchStations();
+            _stationIdCache = stations.Stations.First().Id;
         }
-        else
+
+        try
         {
-            context.WriteLine("Reading already exists in database.");
+            var data = await semsClient.FetchCurrentData(_stationIdCache!);
+            if (data.Data?.Station?.Id == null) throw new Exception("No station ID available.");
+            if (data.Data?.Today == null) throw new Exception("No data for today available.");
+            if (data.Data?.Current == null) throw new Exception("No current data available.");
+
+            context.WriteLine("Loading previous reading ...");
+            var oldReading = await db.Readings
+                .OrderByDescending(x => x.DateTime)
+                .FirstOrDefaultAsync();
+
+            var newReading = new Reading
+            {
+                CurrentLoad = ParseWatts(data.Data.Current.Load) ?? 0,
+                CurrentPv = ParseWatts(data.Data.Current.Pv) ?? 0,
+                CurrentGrid = ParseWatts(data.Data.Current.Grid) ?? 0,
+                CurrentBattery = ParseWatts(data.Data.Current.Battery) ?? 0,
+                CurrentBatterySoc = data.Data.Current.Soc ?? 0,
+
+                DayTotal = data.Data.Today.Sum ?? 0,
+                DayBought = data.Data.Today.Buy ?? 0,
+                DaySold = data.Data.Today.Sell ?? 0,
+                DayConsumption = data.Data.Today.ConsumptionOfLoad ?? 0,
+                DaySelfUse = data.Data.Today.SelfUseOfPv ?? 0,
+
+                DateTime = DateTime.UtcNow
+            };
+
+            if (data.Data.Current.BatteryStatus < 0) newReading.CurrentBattery *= -1;
+
+            if (oldReading == null || !newReading.Equals(oldReading))
+            {
+                context.WriteLine("Saving new reading to database ...");
+                context.WriteLine(newReading.ToString());
+                await db.AddAsync(newReading);
+                await db.SaveChangesAsync();
+            }
+            else
+            {
+                context.WriteLine("Reading already exists in database.");
+            }
+        }
+        catch
+        {
+            _stationIdCache = null;
+            throw;
         }
     }
 

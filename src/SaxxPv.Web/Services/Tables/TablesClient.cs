@@ -1,4 +1,3 @@
-using Adliance.AspNetCore.Buddy.Extensions;
 using Adliance.Buddy.DateTime;
 using Azure.Data.Tables;
 using Microsoft.Extensions.Options;

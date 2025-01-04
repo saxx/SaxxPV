@@ -1,5 +1,5 @@
-﻿@using System.Globalization
-@using System.Text.Json
+﻿@using System.Text.Json
+@using Adliance.Buddy.DateTime
 @model SaxxPv.Web.ViewModels.Home.DayViewModel
 
 <div id="productionChart" style="height:400px;"></div>
@@ -12,8 +12,9 @@
             "bottom": 20
         },
         "xAxis": {
-            "type": "category",
-            "data": @Html.Raw(JsonSerializer.Serialize(Model.ChartTimes))
+            type: "time",
+            min: @Html.Raw(JsonSerializer.Serialize(Model.Day.ToDateTime(new TimeOnly(0, 0, 1)))),
+            max: @Html.Raw(JsonSerializer.Serialize(Model.Day.ToDateTime(new TimeOnly(23, 59, 59))))
         },
         "yAxis": [
             {
@@ -26,11 +27,14 @@
                 type: "value",
                 axisLabel: {
                     formatter: "{value}%"
+                },
+                splitLine: {
+                    show: false
                 }
             }
         ],
         "series": [{
-            "data": @Html.Raw(JsonSerializer.Serialize(Model.ChartPv)),
+            "data": @Html.Raw(JsonSerializer.Serialize(Model.ChartPv.Select(x => new object[] { x.Key, x.Value }).ToList())),
             "type": "line",
             "smooth": true,
             "showSymbol": false,
@@ -42,7 +46,7 @@
                 "opacity": 0.5
             }
         }, {
-            "data": @Html.Raw(JsonSerializer.Serialize(Model.ChartLoad)),
+            "data": @Html.Raw(JsonSerializer.Serialize(Model.ChartLoad.Select(x => new object[] { x.Key, x.Value }).ToList())),
             "type": "line",
             "smooth": true,
             "showSymbol": false,
@@ -54,22 +58,22 @@
                 "opacity": 0.5
             }
         }, {
-            "data": @Html.Raw(JsonSerializer.Serialize(Model.ChartGrid)),
+            "data": @Html.Raw(JsonSerializer.Serialize(Model.ChartGrid.Select(x => new object[] { x.Key, x.Value }).ToList())),
             "type": "line",
-            "smooth": true,
+            "smooth": 1,
             "lineStyle": {
                 "width": 3,
                 "color": "#000"
             },
             "showSymbol": false
         }, {
-            "data": @Html.Raw(JsonSerializer.Serialize(Model.ChartBatterySoc)),
+            "data": @Html.Raw(JsonSerializer.Serialize(Model.ChartBatterySoc.Select(x => new object[] { x.Key, x.Value }).ToList())),
             "type": "line",
-            "smooth": true,
+            "smooth": 0.6,
             "yAxisIndex": 1,
             "lineStyle": {
                 "width": 2,
-                "color": "#aaa"
+                "color": "#0392cf"
             },
             "showSymbol": false
         }]

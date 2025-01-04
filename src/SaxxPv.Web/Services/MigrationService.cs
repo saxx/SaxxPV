@@ -56,6 +56,8 @@ public class MigrationService(IServiceProvider services)
             context.WriteLine($"\tLoading tables data ...");
             var rows = tablesClient.LoadSemsForMonth(d, NullLogger.Instance);
             context.WriteLine($"\t\t{rows.Count} rows loaded.");
+            rows = rows.DistinctBy(x => x.DateTime).ToList();
+            context.WriteLine($"\t\t{rows.Count} distinct rows.");
 
             var min = new DateTime(d, new TimeOnly(0, 0, 0), DateTimeKind.Utc);
             d = d.AddMonths(1);
@@ -68,12 +70,8 @@ public class MigrationService(IServiceProvider services)
             context.WriteLine($"\tDeleted {deletedRows} rows between {min} and {max} from database.");
 
             context.WriteLine("\tInserting new data into database ...");
-            var inserted = 0;
             foreach (var r in rows.OrderBy(x => x.DateTime))
             {
-                var oldReading = await db.Readings
-                    .OrderByDescending(x => x.DateTime)
-                    .FirstOrDefaultAsync();
                 var newReading = new Reading
                 {
                     CurrentGrid = r.CurrentGrid,
@@ -89,17 +87,10 @@ public class MigrationService(IServiceProvider services)
                     DayTotal = r.DayTotal
                 };
 
-                if (oldReading == null || !newReading.Equals(oldReading))
-                {
-                    if (oldReading == null || newReading.DateTime != oldReading.DateTime)
-                    {
-                        db.Readings.Add(newReading);
-                        await db.SaveChangesAsync();
-                        inserted++;
-                    }
-                }
+                db.Readings.Add(newReading);
             }
 
+            var inserted = await db.SaveChangesAsync();
             context.WriteLine($"\t\t{inserted} rows inserted.");
         }
     }
