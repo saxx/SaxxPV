@@ -16,14 +16,7 @@
         },
         "yAxis": [{
             "name": "kW/h",
-            "type": "value",
-            "min": -25,
-            "max": 55
-        }, {
-            "name": "\u20AC",
-            "type": "value",
-            "min": -10,
-            "max": 10
+            "type": "value"
         }],
         "series": [{
             "data": @Html.Raw(JsonSerializer.Serialize(Model.Days.Select(x => Math.Round(x.Sold, 1)))),

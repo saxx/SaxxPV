@@ -1,4 +1,5 @@
 ﻿@using System.Globalization
+@using Adliance.Buddy.DateTime
 @using SaxxPv.Web.Controllers
 @model SaxxPv.Web.ViewModels.Home.DayViewModel
 
@@ -36,6 +37,6 @@
 @if (Model.SemsCounts.HasValue)
 {
     <div style="margin-top:32px; text-align:right; font-size:12px; line-height:14px;">
-        <a href="/hangfire" style="text-decoration: none; color: #999;">@Model.SemsCounts?.ToString("N0", CultureInfo.CurrentCulture) data points, last update at @Model.LastSemsDateTime?.ToString("HH:mm")</a>
+        <a href="/hangfire" style="text-decoration: none; color: #999;">@Model.SemsCounts?.ToString("N0", CultureInfo.CurrentCulture) data points, last update at @Model.LastSemsDateTime?.UtcToCet().ToString("HH:mm") CET</a>
     </div>
 }
