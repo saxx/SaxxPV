@@ -1,7 +1,9 @@
 using System.Globalization;
 using Hangfire;
 using Hangfire.Console;
+using Hangfire.Dashboard;
 using Microsoft.EntityFrameworkCore;
+using SaxxPv.Web;
 using SaxxPv.Web.Models.Database;
 using SaxxPv.Web.Models.Options;
 using SaxxPv.Web.Services;
@@ -56,7 +58,13 @@ app.UseRequestLocalization(new RequestLocalizationOptions
 });
 app.MapDefaultControllerRoute();
 app.MapHealthChecks("/health");
-app.UseHangfireDashboard("/hangfire", new DashboardOptions());
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    Authorization =
+    [
+        new HangfireAuthorizationFilter()
+    ]
+});
 RecurringJob.AddOrUpdate("Fetch_Reading", () => new SemsToDbBackgroundJob(app.Services).Run(null!), Cron.Minutely);
 RecurringJob.AddOrUpdate("Migrate_Pricing", () => new MigrationService(app.Services).MigratePricingData(null!), Cron.Never);
 RecurringJob.AddOrUpdate("Migrate_Readings", () => new MigrationService(app.Services).MigrateReadingData(null!), Cron.Never);
