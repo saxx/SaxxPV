@@ -1,7 +1,7 @@
 name: SaxxPV Pipeline
 
 env:
-  VERSION: 1.1.0.${{ github.run_number }}
+  VERSION: 1.2.0.${{ github.run_number }}
 
 on:
   push:
@@ -20,7 +20,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '9.0.x'
       - name: Test
         run: dotnet test --configuration Release
   
