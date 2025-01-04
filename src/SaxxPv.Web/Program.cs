@@ -29,10 +29,7 @@ builder.Services.AddHangfire(config =>
     config.UseSqlServerStorage(builder.Configuration.GetValue<string>("DatabaseConnectionString"));
     config.UseConsole();
 });
-builder.Services.AddHangfireServer(x =>
-{
-    x.WorkerCount = 1;
-});
+builder.Services.AddHangfireServer(x => { });
 builder.Services.AddHealthChecks().AddDbContextCheck<Db>();
 
 var app = builder.Build();
