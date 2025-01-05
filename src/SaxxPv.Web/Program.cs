@@ -6,14 +6,12 @@ using SaxxPv.Web;
 using SaxxPv.Web.Models.Database;
 using SaxxPv.Web.Models.Options;
 using SaxxPv.Web.Services;
-using SaxxPv.Web.Services.Tables;
 using SaxxPv.Web.ViewModels.Home;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<TablesOptions>(builder.Configuration.GetSection("Tables"));
 builder.Services.Configure<SemsOptions>(builder.Configuration.GetSection("Sems"));
-builder.Services.AddTransient<TablesClient>();
 builder.Services.AddTransient<DayViewModelFactory>();
 builder.Services.AddTransient<MonthViewModelFactory>();
 builder.Services.AddTransient<PricingService>();
@@ -62,6 +60,4 @@ app.UseHangfireDashboard("/hangfire", new DashboardOptions
     ]
 });
 RecurringJob.AddOrUpdate("Fetch_Reading", () => new SemsToDbBackgroundJob(app.Services).Run(null!), Cron.Minutely);
-RecurringJob.AddOrUpdate("Migrate_Pricing", () => new MigrationService(app.Services).MigratePricingData(null!), Cron.Never);
-RecurringJob.AddOrUpdate("Migrate_Readings", () => new MigrationService(app.Services).MigrateReadingData(null!), Cron.Never);
 app.Run();

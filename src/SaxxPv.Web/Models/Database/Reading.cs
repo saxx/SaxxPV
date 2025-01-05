@@ -23,13 +23,13 @@ public class Reading
         if (obj is not Reading r) return false;
         if (Math.Abs(r.CurrentLoad - CurrentLoad) > 0.01) return false;
         if (Math.Abs(r.CurrentPv - CurrentPv) > 0.01) return false;
-        if (Math.Abs(r.CurrentGrid - CurrentGrid) > 0.1) return false;
-        if (Math.Abs(r.CurrentBatterySoc - CurrentBatterySoc) > 0.1) return false;
-        if (Math.Abs(r.DayTotal - DayTotal) > 0.1) return false;
-        if (Math.Abs(r.DayBought - DayBought) > 0.1) return false;
-        if (Math.Abs(r.DaySold - DaySold) > 0.1) return false;
-        if (Math.Abs(r.DayConsumption - DayConsumption) > 0.1) return false;
-        if (Math.Abs(r.DaySelfUse - DaySelfUse) > 0.1) return false;
+        if (Math.Abs(r.CurrentGrid - CurrentGrid) > 0.01) return false;
+        if (Math.Abs(r.CurrentBatterySoc - CurrentBatterySoc) > 0.01) return false;
+        if (Math.Abs(r.DayTotal - DayTotal) > 0.01) return false;
+        if (Math.Abs(r.DayBought - DayBought) > 0.01) return false;
+        if (Math.Abs(r.DaySold - DaySold) > 0.01) return false;
+        if (Math.Abs(r.DayConsumption - DayConsumption) > 0.01) return false;
+        if (Math.Abs(r.DaySelfUse - DaySelfUse) > 0.01) return false;
         return true;
     }
 

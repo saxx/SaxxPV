@@ -18,18 +18,20 @@ public class SemsToDbBackgroundJob(IServiceProvider services)
         await using var db = scope.ServiceProvider.GetRequiredService<Db>();
         var semsOptions = scope.ServiceProvider.GetRequiredService<IOptions<SemsOptions>>();
 
-        context.WriteLine("Loading current reading from SEMS ...");
+        context.WriteLine("Authenticate with SEMS ...");
         var semsClient = new Sems.SemsClient();
         await semsClient.Authenticate(semsOptions.Value.Username, semsOptions.Value.Password);
 
         if (_stationIdCache == null)
         {
+            context.WriteLine("Loading stations from SEMS ...");
             var stations = await semsClient.FetchStations();
             _stationIdCache = stations.Stations.First().Id;
         }
 
         try
         {
+            context.WriteLine("Loading current reading from SEMS ...");
             var data = await semsClient.FetchCurrentData(_stationIdCache!);
             if (data.Data?.Station?.Id == null) throw new Exception("No station ID available.");
             if (data.Data?.Today == null) throw new Exception("No data for today available.");
