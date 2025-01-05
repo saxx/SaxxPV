@@ -60,6 +60,7 @@ public class SemsToDbBackgroundJob(IServiceProvider services)
             };
 
             if (data.Data.Current.BatteryStatus < 0) newReading.CurrentBattery *= -1;
+            if (newReading.CurrentLoad > newReading.CurrentPv) newReading.CurrentGrid *= -1;
 
             if (oldReading == null || !newReading.Equals(oldReading))
             {
