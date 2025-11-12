@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Reflection
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -71,5 +72,6 @@
 </main>
 
 @await RenderSectionAsync("Scripts", required: false)
+<!-- SaxxPV v@(typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion) -->
 </body>
 </html>
