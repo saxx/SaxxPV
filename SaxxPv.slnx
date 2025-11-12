@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/Solution/">
+    <File Path="dockerfile" />
+    <File Path="pipeline.yml" />
+  </Folder>
+  <Project Path="src/SaxxPv.Web/SaxxPv.Web.csproj" />
+  <Project Path="test/SaxxPv.Web.Tests/SaxxPv.Web.Tests.csproj" />
+</Solution>
