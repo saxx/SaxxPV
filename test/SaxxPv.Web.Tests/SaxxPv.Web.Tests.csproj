@@ -5,7 +5,6 @@
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <ImplicitUsings>enable</ImplicitUsings>
-        <NoWarn>1701;1702;NU1510</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
