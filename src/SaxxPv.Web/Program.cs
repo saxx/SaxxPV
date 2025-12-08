@@ -1,4 +1,6 @@
 using System.Globalization;
+using Adliance.AspNetCore.Buddy.Abstractions.Extensions;
+using Adliance.AspNetCore.Buddy.Storage.Extensions;
 using Hangfire;
 using Hangfire.Console;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +8,7 @@ using SaxxPv.Web;
 using SaxxPv.Web.Models.Database;
 using SaxxPv.Web.Models.Options;
 using SaxxPv.Web.Services;
+using SaxxPv.Web.Services.InverterUploader;
 using SaxxPv.Web.ViewModels.Home;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +18,8 @@ builder.Services.Configure<SemsOptions>(builder.Configuration.GetSection("Sems")
 builder.Services.AddTransient<DayViewModelFactory>();
 builder.Services.AddTransient<MonthViewModelFactory>();
 builder.Services.AddTransient<PricingService>();
+builder.Services.AddTransient<InverterUploaderService>();
+builder.Services.AddBuddy().AddStorage(builder.Configuration.GetSection("Storage"));
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<Db>(options =>
 {
@@ -59,5 +64,5 @@ app.UseHangfireDashboard("/hangfire", new DashboardOptions
         new HangfireAuthorizationFilter()
     ]
 });
-RecurringJob.AddOrUpdate("Fetch_Reading", () => new SemsToDbBackgroundJob(app.Services).Run(null!), Cron.Minutely);
+RecurringJob.AddOrUpdate("Fetch_Reading", () => new InverterUploaderToDbBackgroundJob(app.Services).Run(null!), Cron.Minutely);
 app.Run();

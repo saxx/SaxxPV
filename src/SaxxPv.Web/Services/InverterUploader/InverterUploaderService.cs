@@ -1,0 +1,79 @@
+using System.Globalization;
+using System.Text;
+using System.Text.Json;
+using Adliance.AspNetCore.Buddy.Storage;
+using Adliance.Buddy.DateTime;
+using SaxxPv.Web.Services.InverterUploader.Models;
+
+namespace SaxxPv.Web.Services.InverterUploader;
+
+public class InverterUploaderService(IStorage storage)
+{
+    public async Task<IList<Result>> GetResults(bool deleteAfterFetch = false)
+    {
+        return (await GetReadings(deleteAfterFetch)).Select(MapReadingToResult).ToList();
+    }
+
+    public async Task<IList<Reading>> GetReadings(bool deleteAfterFetch = false)
+    {
+        var result = new List<Reading>();
+        foreach (var f in await storage.List("inverter-uploads"))
+        {
+            try
+            {
+                var bytes = await storage.Load(f.Path);
+                if (bytes == null) continue;
+                var json = Encoding.UTF8.GetString(bytes);
+                var reading = JsonSerializer.Deserialize<Reading>(json);
+                if (reading == null) continue;
+                result.Add(reading);
+
+                if (deleteAfterFetch) await storage.Delete(f.Path);
+            }
+            catch
+            {
+                // do nothing here
+            }
+        }
+
+        return result;
+    }
+
+    private static Result MapReadingToResult(Reading r)
+    {
+        var result = new Result
+        {
+            DateTime = DateTime.ParseExact(r.Timestamp!.Trim(), "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture).CetToUtc(),
+            CurrentBatterySoc = double.Parse(r.BatteryStateOfCharge!.TrimEnd(' ', '%'), CultureInfo.InvariantCulture),
+            CurrentBattery = ParseW(r.BatteryPower),
+            CurrentLoad = ParseW(r.HouseConsumption),
+            CurrentGrid = ParseW(r.Load),
+            CurrentPv = ParseW(r.PvPower),
+            DayBought = Math.Round(Math.Max(0, ParseKwh(r.TodayLoad) - ParseKwh(r.TodaysPvGeneration)), 2, MidpointRounding.AwayFromZero),
+            DayConsumption = ParseKwh(r.TodayLoad),
+            DaySelfUse = ParseKwh(r.TodayEnergyExport),
+            DaySold = ParseKwh(r.TodayEnergyImport),
+            DayTotal = ParseKwh(r.TodaysPvGeneration)
+        };
+
+        if (ParseInt(r.BatteryModeCode) < 3) result.CurrentBattery *= -1;
+        if (result.CurrentLoad > result.CurrentPv) result.CurrentGrid *= -1;
+
+        return result;
+    }
+
+    private static double ParseKwh(string? s)
+    {
+        return double.Parse(s!.TrimEnd(' ', 'k', 'W', 'h'), CultureInfo.InvariantCulture);
+    }
+
+    private static double ParseW(string? s)
+    {
+        return double.Parse(s!.TrimEnd(' ', 'W'), CultureInfo.InvariantCulture);
+    }
+
+    private static int ParseInt(string? s)
+    {
+        return int.Parse(s!.TrimEnd(' '), CultureInfo.InvariantCulture);
+    }
+}
