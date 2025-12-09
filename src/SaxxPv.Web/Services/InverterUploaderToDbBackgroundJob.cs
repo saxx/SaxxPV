@@ -51,12 +51,14 @@ public class InverterUploaderToDbBackgroundJob(IServiceProvider services)
                 context.WriteLine("Saving new reading to database ...");
                 context.WriteLine(newReading.ToString());
                 await db.AddAsync(newReading);
-                await db.SaveChangesAsync();
             }
             else
             {
+                oldReading.DateTime = newReading.DateTime;
                 context.WriteLine("Reading already exists in database.");
             }
+
+            await db.SaveChangesAsync();
         }
     }
 }

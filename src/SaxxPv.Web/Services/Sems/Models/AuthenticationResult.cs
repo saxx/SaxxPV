@@ -10,7 +10,6 @@ public class AuthenticationResult
     [JsonPropertyName("api")] public string? Api { get; set; }
     [JsonPropertyName("data")] public AuthenticationData? Data { get; set; }
 
-
     public class AuthenticationData
     {
         [JsonPropertyName("uid")] public Guid? Uid { get; set; }

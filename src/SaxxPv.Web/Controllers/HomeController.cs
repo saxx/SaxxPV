@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using SaxxPv.Web.ViewModels.Home;
 
 namespace SaxxPv.Web.Controllers;
