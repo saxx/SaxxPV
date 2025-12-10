@@ -60,7 +60,7 @@ public class InverterUploaderService(IStorage storage)
         };
 
         if (ParseInt(r.BatteryModeCode) <= 3) result.CurrentBattery *= -1;
-        if (ParseInt(r.BatteryModeCode) > 1) result.CurrentGrid *= -1;
+        if (ParseInt(r.GridModeCode) > 1) result.CurrentGrid *= -1;
 
         return result;
     }
