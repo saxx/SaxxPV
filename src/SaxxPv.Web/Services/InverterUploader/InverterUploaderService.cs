@@ -46,14 +46,16 @@ public class InverterUploaderService(IStorage storage)
             DateTime = DateTime.ParseExact(r.Timestamp!.Trim(), "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture).CetToUtc(),
             CurrentBatterySoc = double.Parse(r.BatteryStateOfCharge!.TrimEnd(' ', '%'), CultureInfo.InvariantCulture),
             CurrentBattery = ParseW(r.BatteryPower),
-            CurrentLoad = ParseW(r.HouseConsumption),
-            CurrentGrid = ParseW(r.Load),
+
             CurrentPv = ParseW(r.PvPower),
-            DayBought = Math.Round(Math.Max(0, ParseKwh(r.TodayLoad) - ParseKwh(r.TodaysPvGeneration)), 2, MidpointRounding.AwayFromZero),
+            CurrentLoad = ParseW(r.Load),
+            CurrentGrid = ParseW(r.Load) - ParseW(r.HouseConsumption),
+
+            DayTotal = ParseKwh(r.TodaysPvGeneration),
             DayConsumption = ParseKwh(r.TodayLoad),
+            DayBought = ParseKwh(r.TodayEnergyImport),
             DaySelfUse = ParseKwh(r.TodayEnergyExport),
-            DaySold = ParseKwh(r.TodayEnergyImport),
-            DayTotal = ParseKwh(r.TodaysPvGeneration)
+            DaySold = MustBePositive(ParseKwh(r.TodayEnergyExport) - ParseKwh(r.TodayBatteryDischarge) - ParseKwh(r.TodayBatteryCharge))
         };
 
         if (ParseInt(r.BatteryModeCode) < 3) result.CurrentBattery *= -1;
@@ -75,5 +77,10 @@ public class InverterUploaderService(IStorage storage)
     private static int ParseInt(string? s)
     {
         return int.Parse(s!.TrimEnd(' '), CultureInfo.InvariantCulture);
+    }
+
+    private static double MustBePositive(double d)
+    {
+        return Math.Round(Math.Max(0, d), MidpointRounding.AwayFromZero);
     }
 }
