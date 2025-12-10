@@ -49,7 +49,7 @@ public class InverterUploaderService(IStorage storage)
 
             CurrentPv = ParseW(r.PvPower),
             CurrentLoad = ParseW(r.Load),
-            CurrentGrid = MustBePositive(ParseW(r.OnGridL1Power) + ParseW(r.OnGridL2Power) + ParseW(r.OnGridL3Power)),
+            CurrentGrid = ParseW(r.MeterActivePowerTotal),
 
             // import and export seem to be switched
             DayTotal = ParseKwh(r.TodaysPvGeneration),
