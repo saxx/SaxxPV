@@ -55,7 +55,7 @@ public class InverterUploaderService(IStorage storage)
             DayConsumption = ParseKwh(r.TodayLoad),
             DayBought = ParseKwh(r.TodayEnergyImport),
             DaySelfUse = ParseKwh(r.TodayEnergyExport),
-            DaySold = MustBePositive(ParseKwh(r.TodayEnergyExport) - ParseKwh(r.TodayBatteryDischarge) - ParseKwh(r.TodayBatteryCharge))
+            DaySold = MustBePositive(ParseKwh(r.TodaysPvGeneration) - (ParseKwh(r.TodayLoad) + ParseKwh(r.TodayBatteryCharge)))
         };
 
         if (ParseInt(r.BatteryModeCode) < 3) result.CurrentBattery *= -1;
