@@ -19,7 +19,7 @@
             "type": "value"
         }],
         "series": [{
-            "data": @Html.Raw(JsonSerializer.Serialize(Model.Days.Select(x => Math.Round(x.Sold, 1)))),
+            "data": @Html.Raw(JsonSerializer.Serialize(Model.Days.Select(x => Math.Round(x.Sold, 1,  MidpointRounding.AwayFromZero)))),
             "type": "bar",
             "showSymbol": false,
             "lineStyle": {
@@ -27,7 +27,7 @@
             },
             "color": "#7bc043"
         }, {
-            "data": @Html.Raw(JsonSerializer.Serialize(Model.Days.Select(x => -Math.Round(x.Consumption, 1)))),
+            "data": @Html.Raw(JsonSerializer.Serialize(Model.Days.Select(x => -Math.Round(x.Consumption, 1,  MidpointRounding.AwayFromZero)))),
             "type": "bar",
             "showSymbol": false,
             "lineStyle": {
