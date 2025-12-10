@@ -49,7 +49,7 @@ public class InverterUploaderService(IStorage storage)
 
             CurrentPv = ParseW(r.PvPower),
             CurrentLoad = ParseW(r.Load),
-            CurrentGrid = ParseW(r.Load) - ParseW(r.HouseConsumption),
+            CurrentGrid = MustBePositive(ParseW(r.OnGridL1Power) + ParseW(r.OnGridL2Power) + ParseW(r.OnGridL3Power)),
 
             // import and export seem to be switched
             DayTotal = ParseKwh(r.TodaysPvGeneration),
@@ -59,8 +59,8 @@ public class InverterUploaderService(IStorage storage)
             DaySold = ParseKwh(r.TodayEnergyImport)
         };
 
-        if (ParseInt(r.BatteryModeCode) < 3) result.CurrentBattery *= -1;
-        if (result.CurrentLoad > result.CurrentPv) result.CurrentGrid *= -1;
+        if (ParseInt(r.BatteryModeCode) <= 3) result.CurrentBattery *= -1;
+        if (ParseInt(r.BatteryModeCode) > 1) result.CurrentGrid *= -1;
 
         return result;
     }
