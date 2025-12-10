@@ -54,9 +54,9 @@ public class InverterUploaderService(IStorage storage)
             // import and export seem to be switched
             DayTotal = ParseKwh(r.TodaysPvGeneration),
             DayConsumption = ParseKwh(r.TodayLoad),
-            DayBought = MustBePositive(ParseKwh(r.TodayEnergyExport) - ParseKwh(r.TodayBatteryDischarge)),
-            DaySelfUse = ParseKwh(r.TodayEnergyExport),
-            DaySold = ParseKwh(r.TodayEnergyImport)
+            DayBought = ParseKwh(r.TodayEnergyImport),
+            DaySelfUse = MustBePositive(ParseKwh(r.TodaysPvGeneration) - ParseKwh(r.TodayEnergyExport)),
+            DaySold = ParseKwh(r.TodayEnergyExport)
         };
 
         if (ParseInt(r.BatteryModeCode) <= 3) result.CurrentBattery *= -1;
