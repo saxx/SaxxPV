@@ -80,5 +80,7 @@ public class InverterUploaderToDbBackgroundJob(IServiceProvider services)
 
             await db.SaveChangesAsync();
         }
+
+        context.WriteLine("Done. Goodbye.");
     }
 }

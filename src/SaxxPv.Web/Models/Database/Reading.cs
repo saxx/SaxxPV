@@ -69,10 +69,10 @@ public class Reading
                $"Day Bought: {DayBought:0.00} kWh\n" +
                $"Day Sold: {DaySold:0.00} kWh\n" +
                $"Day Consumption: {DayConsumption:0.00} kWh\n" +
-               $"Day Self-Use: {DaySelfUse:0.00} kWh" +
-               $"Day Battery Charge: {DayBatteryCharge:0.00} kWh" +
-               $"Day Battery Discharge: {DayBatteryDischarge:0.00} kWh" +
-               $"Total Import: {TotalImport:0.00} kWh" +
+               $"Day Self-Use: {DaySelfUse:0.00} kWh\n" +
+               $"Day Battery Charge: {DayBatteryCharge:0.00} kWh\n" +
+               $"Day Battery Discharge: {DayBatteryDischarge:0.00} kWh\n" +
+               $"Total Import: {TotalImport:0.00} kWh\n" +
                $"Total Export: {TotalExport:0.00} kWh";
     }
 }

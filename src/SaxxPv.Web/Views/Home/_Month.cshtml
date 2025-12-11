@@ -17,12 +17,12 @@
     @foreach (var d in Model.Days)
     {
         <tr>
-            <td title="Total Import: @d.TotalImport?.ToString("N1")kWh, Total Export: @d.TotalExport?.ToString("N1")kWh">
+            <td>
                 <a asp-action="@nameof(HomeController.Day)" asp-route-day="@d.DateTime.ToString("yyyy-MM-dd")" title="@d.DataPoints readings">
                     @d.DateTime.ToString("dddd, dd.MM.")
                 </a>
             </td>
-            <td style="text-align:right;">@(d.Consumption.ToString("N1"))</td>
+            <td style="text-align:right;" title="Total Import: @d.TotalImport?.ToString("N1")kWh, Total Export: @d.TotalExport?.ToString("N1")kWh">@(d.Consumption.ToString("N1"))</td>
             <td style="text-align:right;">@(d.Sold.ToString("N1"))</td>
             <td style="text-align:right;">@(d.Bought.ToString("N1"))</td>
             <td style="text-align:right;">
