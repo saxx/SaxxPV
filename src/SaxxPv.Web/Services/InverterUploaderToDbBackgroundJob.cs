@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Hangfire.Console;
 using Hangfire.Server;
 using Microsoft.EntityFrameworkCore;
@@ -36,9 +37,28 @@ public class InverterUploaderToDbBackgroundJob(IServiceProvider services)
                 DaySold = r.DaySold,
                 DayConsumption = r.DayConsumption,
                 DaySelfUse = r.DaySelfUse,
+                DayBatteryCharge = r.DayBatteryCharge,
+                DayBatteryDischarge = r.DayBatteryDischarge,
+
+                TotalImport = r.TotalImport,
+                TotalExport = r.TotalExport,
 
                 DateTime = r.DateTime
             };
+
+            if (oldReading != null && oldReading.DateTime.Date == newReading.DateTime.Date)
+            {
+                if (oldReading.TotalImport.HasValue && newReading.TotalImport.HasValue)
+                {
+                    newReading.DayBought = Math.Round(newReading.TotalImport.Value - oldReading.TotalImport.Value, 1, MidpointRounding.AwayFromZero);
+                }
+
+                if (oldReading.TotalExport.HasValue && newReading.TotalExport.HasValue)
+                {
+                    newReading.DaySold = Math.Round(newReading.TotalExport.Value - oldReading.TotalExport.Value, 1, MidpointRounding.AwayFromZero);
+                    newReading.DaySelfUse = Math.Round(newReading.DayTotal - newReading.DaySold, 1, MidpointRounding.AwayFromZero);
+                }
+            }
 
             if (oldReading != null && oldReading.DateTime > newReading.DateTime)
             {

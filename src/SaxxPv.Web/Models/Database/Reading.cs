@@ -13,23 +13,47 @@ public class Reading
     public double CurrentBatterySoc { get; set; }
 
     public double DayTotal { get; set; }
-    public double DayBought { get; set; }
-    public double DaySold { get; set; }
     public double DayConsumption { get; set; }
+
+    public double DayBought { get; set; }
     public double DaySelfUse { get; set; }
+    public double DaySold { get; set; }
+
+    public double? DayBatteryCharge { get; set; }
+    public double? DayBatteryDischarge { get; set; }
+    public double? TotalImport { get; set; }
+    public double? TotalExport { get; set; }
 
     public override bool Equals(object? obj)
     {
         if (obj is not Reading r) return false;
-        if (Math.Abs(r.CurrentLoad - CurrentLoad) > 0.01) return false;
-        if (Math.Abs(r.CurrentPv - CurrentPv) > 0.01) return false;
-        if (Math.Abs(r.CurrentGrid - CurrentGrid) > 0.01) return false;
-        if (Math.Abs(r.CurrentBatterySoc - CurrentBatterySoc) > 0.01) return false;
-        if (Math.Abs(r.DayTotal - DayTotal) > 0.01) return false;
-        if (Math.Abs(r.DayBought - DayBought) > 0.01) return false;
-        if (Math.Abs(r.DaySold - DaySold) > 0.01) return false;
-        if (Math.Abs(r.DayConsumption - DayConsumption) > 0.01) return false;
-        if (Math.Abs(r.DaySelfUse - DaySelfUse) > 0.01) return false;
+        if (Math.Abs(r.CurrentLoad - CurrentLoad) > 10) return false; // W
+        if (Math.Abs(r.CurrentPv - CurrentPv) > 10) return false; // W
+        if (Math.Abs(r.CurrentGrid - CurrentGrid) > 10) return false; // W
+        if (Math.Abs(r.CurrentBatterySoc - CurrentBatterySoc) > 1) return false; // %
+
+        if (Math.Abs(r.DayTotal - DayTotal) > 0.1) return false; // kwH
+        if (Math.Abs(r.DayBought - DayBought) > 0.1) return false; // kwH
+        if (Math.Abs(r.DaySold - DaySold) > 0.1) return false; // kwH
+        if (Math.Abs(r.DayConsumption - DayConsumption) > 0.1) return false; // kwH
+        if (Math.Abs(r.DaySelfUse - DaySelfUse) > 0.1) return false; // kwH
+
+
+        if (r.DayBatteryCharge == null && DayBatteryCharge != null) return false;
+        if (r.DayBatteryCharge != null && DayBatteryCharge == null) return false;
+        if (r.DayBatteryCharge != null && DayBatteryCharge != null && Math.Abs(r.DayBatteryCharge.Value - DayBatteryCharge.Value) > 0.1) return false; // kwH
+
+        if (r.DayBatteryDischarge == null && DayBatteryDischarge != null) return false;
+        if (r.DayBatteryDischarge != null && DayBatteryDischarge == null) return false;
+        if (r.DayBatteryDischarge != null && DayBatteryDischarge != null && Math.Abs(r.DayBatteryDischarge.Value - DayBatteryDischarge.Value) > 0.1) return false; // kwH
+
+        if (r.TotalExport == null && TotalExport != null) return false;
+        if (r.TotalExport != null && TotalExport == null) return false;
+        if (r.TotalExport != null && TotalExport != null && Math.Abs(r.TotalExport.Value - TotalExport.Value) > 0.1) return false; // kwH
+
+        if (r.TotalImport == null && TotalImport != null) return false;
+        if (r.TotalImport != null && TotalImport == null) return false;
+        if (r.TotalImport != null && TotalImport != null && Math.Abs(r.TotalImport.Value - TotalImport.Value) > 0.1) return false; // kwH
         return true;
     }
 
@@ -45,6 +69,10 @@ public class Reading
                $"Day Bought: {DayBought:0.00} kWh\n" +
                $"Day Sold: {DaySold:0.00} kWh\n" +
                $"Day Consumption: {DayConsumption:0.00} kWh\n" +
-               $"Day Self-Use: {DaySelfUse:0.00} kWh";
+               $"Day Self-Use: {DaySelfUse:0.00} kWh" +
+               $"Day Battery Charge: {DayBatteryCharge:0.00} kWh" +
+               $"Day Battery Discharge: {DayBatteryDischarge:0.00} kWh" +
+               $"Total Import: {TotalImport:0.00} kWh" +
+               $"Total Export: {TotalExport:0.00} kWh";
     }
 }

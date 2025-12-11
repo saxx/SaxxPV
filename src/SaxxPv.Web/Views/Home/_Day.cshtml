@@ -4,19 +4,35 @@
     <h3>Day</h3>
     <i class="fad fa-lightbulb-on"></i>
     -@(Model.DayConsumption?.ToString("N1")) kW/h
+
     <br/>
     <i class="fad fa-solar-panel"></i>
     +@(Model.DayPv?.ToString("N1")) kW/h
+
     <br/>
     <i class="fad fa-solar-panel"></i>
     <i class="fad fa-arrow-right-long"></i>
     <i class="fad fa-house"></i>
     @(Model.DaySelfUse?.ToString("N1")) kW/h
+
+    <br/>
+    <i class="fad fa-solar-panel"></i>
+    <i class="fad fa-arrow-right-long"></i>
+    <i class="fad fa-battery"></i>
+    @(Model.DayBatteryCharge?.ToString("N1")) kW/h
+
+    <br/>
+    <i class="fad fa-battery"></i>
+    <i class="fad fa-arrow-right-long"></i>
+    <i class="fad fa-house"></i>
+    @(Model.DayBatteryCharge?.ToString("N1")) kW/h
+
     <br/>
     <i class="fad fa-solar-panel"></i>
     <i class="fad fa-arrow-right-long"></i>
     <i class="fad fa-utility-pole-double"></i>
     @(Model.DaySold?.ToString("N1")) kW/h
+
     <br/>
     <i class="fad fa-utility-pole-double"></i>
     <i class="fad fa-arrow-right-long"></i>

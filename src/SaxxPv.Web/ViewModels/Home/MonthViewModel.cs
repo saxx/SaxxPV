@@ -18,7 +18,7 @@ public class MonthViewModelFactory(Db db, PricingService pricingService)
             .ToListAsync();
         var result = new MonthViewModel(day)
         {
-            SemsCounts = rows.Count
+            DataPointsCount = rows.Count
         };
 
         foreach (var r in rows)
@@ -44,6 +44,10 @@ public class MonthViewModelFactory(Db db, PricingService pricingService)
                 dayRow.Sold = r.DaySold;
                 dayRow.Price = -await pricingService.CalculateBuyPrice(new DateOnly(r.DateTime.Year, r.DateTime.Month, r.DateTime.Day), dayRow.Bought) +
                                await pricingService.CalculateSellPrice(new DateOnly(r.DateTime.Year, r.DateTime.Month, r.DateTime.Day), dayRow.Sold);
+                dayRow.BatteryCharge = r.DayBatteryCharge;
+                dayRow.BatteryDischarge = r.DayBatteryDischarge;
+                dayRow.TotalImport = r.TotalImport;
+                dayRow.TotalExport = r.TotalExport;
             }
 
             if (dayRow.BatterySocMin > r.CurrentBatterySoc) dayRow.BatterySocMin = r.CurrentBatterySoc;
@@ -71,7 +75,7 @@ public class MonthViewModel(DateOnly day)
         }
     }
 
-    public int? SemsCounts { get; init; }
+    public int? DataPointsCount { get; init; }
     public IList<DayDetails> Days { get; set; } = new List<DayDetails>();
 
     public class DayDetails
@@ -84,5 +88,9 @@ public class MonthViewModel(DateOnly day)
         public double BatterySocMin { get; set; }
         public double BatterySocMax { get; set; }
         public int DataPoints { get; set; }
+        public double? BatteryCharge { get; set; }
+        public double? BatteryDischarge { get; set; }
+        public double? TotalImport { get; set; }
+        public double? TotalExport { get; set; }
     }
 }

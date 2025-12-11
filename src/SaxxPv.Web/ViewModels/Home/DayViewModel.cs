@@ -31,6 +31,8 @@ public class DayViewModelFactory(Db db, PricingService pricingService)
             DayConsumption = currentReading.DayConsumption,
             DayPv = currentReading.DayTotal,
             DaySold = currentReading.DaySold,
+            DayBatteryCharge =  currentReading.DayBatteryCharge,
+            DayBatteryDischarge = currentReading.DayBatteryDischarge,
             CurrentGridPrice = currentReading.CurrentGrid > 0
                 ? await pricingService.CalculateSellPrice(day, currentReading.CurrentGrid / 1000d)
                 : await pricingService.CalculateBuyPrice(day, currentReading.CurrentGrid / 1000d),
@@ -76,6 +78,9 @@ public class DayViewModel(DateOnly day)
     public double? DaySelfUse { get; init; }
     public double? DayBought { get; init; }
     public double? DaySold { get; init; }
+
+    public double? DayBatteryCharge { get; init; }
+    public double? DayBatteryDischarge { get; init; }
 
     public double? DaySoldPrice { get; init; }
     public double? DayBoughtPrice { get; init; }

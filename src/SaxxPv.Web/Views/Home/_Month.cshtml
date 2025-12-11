@@ -9,7 +9,7 @@
         <th style="text-align:right; width:85px;">Used</th>
         <th style="text-align:right; width:85px;">Sold</th>
         <th style="text-align:right; width:85px;">Bought</th>
-        <th style="text-align:right; width:85px;">Battery</th>
+        <th style="text-align:right; width:145px;">Battery</th>
     </tr>
     </thead>
 
@@ -17,7 +17,7 @@
     @foreach (var d in Model.Days)
     {
         <tr>
-            <td>
+            <td title="Total Import: @d.TotalImport?.ToString("N1")kWh, Total Export: @d.TotalExport?.ToString("N1")kWh">
                 <a asp-action="@nameof(HomeController.Day)" asp-route-day="@d.DateTime.ToString("yyyy-MM-dd")" title="@d.DataPoints readings">
                     @d.DateTime.ToString("dddd, dd.MM.")
                 </a>
@@ -30,6 +30,13 @@
                 {
                     <text>
                         @(d.BatterySocMin.ToString("N0"))-@(d.BatterySocMax.ToString("N0")) %
+                    </text>
+                }
+
+                @if (d is { BatteryCharge: not null, BatteryDischarge: not null })
+                {
+                    <text>
+                        @("+" + d.BatteryCharge.Value.ToString("N1") + "/-" + d.BatteryDischarge.Value.ToString("N1"))
                     </text>
                 }
             </td>

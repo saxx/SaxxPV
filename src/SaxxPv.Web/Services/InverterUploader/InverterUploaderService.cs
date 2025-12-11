@@ -3,20 +3,21 @@ using System.Text;
 using System.Text.Json;
 using Adliance.AspNetCore.Buddy.Storage;
 using Adliance.Buddy.DateTime;
+using SaxxPv.Web.Models.Database;
 using SaxxPv.Web.Services.InverterUploader.Models;
 
 namespace SaxxPv.Web.Services.InverterUploader;
 
 public class InverterUploaderService(IStorage storage)
 {
-    public async Task<IList<Result>> GetResults(bool deleteAfterFetch = false)
+    public async Task<IList<Reading>> GetResults(bool deleteAfterFetch = false)
     {
         return (await GetReadings(deleteAfterFetch)).Select(MapReadingToResult).ToList();
     }
 
-    public async Task<IList<Reading>> GetReadings(bool deleteAfterFetch = false)
+    public async Task<IList<InverterDataRow>> GetReadings(bool deleteAfterFetch = false)
     {
-        var result = new List<Reading>();
+        var result = new List<InverterDataRow>();
         foreach (var f in await storage.List("inverter-uploads"))
         {
             try
@@ -24,7 +25,7 @@ public class InverterUploaderService(IStorage storage)
                 var bytes = await storage.Load(f.Path);
                 if (bytes == null) continue;
                 var json = Encoding.UTF8.GetString(bytes);
-                var reading = JsonSerializer.Deserialize<Reading>(json);
+                var reading = JsonSerializer.Deserialize<InverterDataRow>(json);
                 if (reading == null) continue;
                 result.Add(reading);
 
@@ -39,27 +40,28 @@ public class InverterUploaderService(IStorage storage)
         return result;
     }
 
-    private static Result MapReadingToResult(Reading r)
+    private static Reading MapReadingToResult(InverterDataRow r)
     {
-        var result = new Result
+        var result = new Reading
         {
             DateTime = DateTime.ParseExact(r.Timestamp!.Trim(), "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture).CetToUtc(),
-            CurrentBatterySoc = double.Parse(r.BatteryStateOfCharge!.TrimEnd(' ', '%'), CultureInfo.InvariantCulture),
+            CurrentBatterySoc = ParsePercent(r.BatteryStateOfCharge),
             CurrentBattery = ParseW(r.BatteryPower),
-
             CurrentPv = ParseW(r.PvPower),
             CurrentLoad = ParseW(r.HouseConsumption),
             CurrentGrid = ParseW(r.MeterActivePowerTotal),
 
-            // import and export seem to be switched
             DayTotal = ParseKwh(r.TodaysPvGeneration),
             DayConsumption = ParseKwh(r.TodayLoad),
-            DayBought = ParseKwh(r.TodayEnergyImport),
+            DayBatteryCharge = ParseKwh(r.TodayBatteryCharge),
+            DayBatteryDischarge = ParseKwh(r.TodayBatteryDischarge),
+            DayBought = 0,
             DaySelfUse = 0,
-            DaySold = MustBePositive(ParseKwh(r.TodaysPvGeneration) - ParseKwh(r.TodayBatteryDischarge) - ParseKwh(r.TodayBatteryCharge) - ParseKwh(r.TodayLoad))
-        };
+            DaySold = 0,
 
-        result.DaySelfUse = MustBePositive(result.DayTotal - result.DaySold + ParseKwh(r.TodayBatteryCharge));
+            TotalImport = ParseKwh(r.MeterTotalEnergyImport),
+            TotalExport = ParseKwh(r.MeterTotalEnergyExport)
+        };
 
         if (ParseInt(r.BatteryModeCode) <= 3) result.CurrentBattery *= -1;
         if (ParseInt(r.GridModeCode) > 1) result.CurrentGrid *= -1;
@@ -75,6 +77,11 @@ public class InverterUploaderService(IStorage storage)
     private static double ParseW(string? s)
     {
         return double.Parse(s!.TrimEnd(' ', 'W'), CultureInfo.InvariantCulture);
+    }
+
+    private static double ParsePercent(string? s)
+    {
+        return double.Parse(s!.TrimEnd(' ', '%'), CultureInfo.InvariantCulture);
     }
 
     private static int ParseInt(string? s)

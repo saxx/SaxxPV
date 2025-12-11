@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace SaxxPv.Web.Services.InverterUploader.Models;
 
-public class Reading
+public class InverterDataRow
 {
     [JsonPropertyName("Timestamp")] public string? Timestamp { get; set; }
     [JsonPropertyName("PV1 Voltage")] public string? Pv1Voltage { get; set; }
