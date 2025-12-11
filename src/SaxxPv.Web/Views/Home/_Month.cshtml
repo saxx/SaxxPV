@@ -22,7 +22,7 @@
                     @d.DateTime.ToString("dddd, dd.MM.")
                 </a>
             </td>
-            <td style="text-align:right; white-space: nowrap;" title="Total Import: @d.TotalImport?.ToString("N1")kWh, Total Export: @d.TotalExport?.ToString("N1")kWh">@(d.Consumption.ToString("N1"))</td>
+            <td style="text-align:right; white-space: nowrap;" title="Total Import: @d.TotalImport?.ToString("N0")kWh, Total Export: @d.TotalExport?.ToString("N0")kWh">@(d.Consumption.ToString("N1"))</td>
             <td style="text-align:right; white-space: nowrap;">@(d.Sold.ToString("N1"))</td>
             <td style="text-align:right; white-space: nowrap;">@(d.Bought.ToString("N1"))</td>
             <td style="text-align:right; white-space: nowrap;">
@@ -37,7 +37,7 @@
                 @if (d is { BatteryCharge: not null, BatteryDischarge: not null })
                 {
                     <text>
-                        @("+" + d.BatteryCharge.Value.ToString("N1") + "&nbsp;/&nbsp;-" + d.BatteryDischarge.Value.ToString("N1"))
+                        @("+" + d.BatteryCharge.Value.ToString("N1") + "/-" + d.BatteryDischarge.Value.ToString("N1"))
                     </text>
                 }
             </td>
