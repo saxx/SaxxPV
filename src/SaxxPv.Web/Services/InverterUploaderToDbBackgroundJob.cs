@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using Hangfire.Console;
 using Hangfire.Server;
 using Microsoft.EntityFrameworkCore;
@@ -20,9 +19,19 @@ public class InverterUploaderToDbBackgroundJob(IServiceProvider services)
 
         foreach (var r in results.OrderBy(x => x.DateTime))
         {
-            var oldReading = await db.Readings
+            var lastReading = await db.Readings.AsNoTracking()
                 .OrderByDescending(x => x.DateTime)
                 .FirstOrDefaultAsync();
+
+            var day = r.DateTime.Date;
+            var firstReadingOfDay = await db.Readings
+                .Where(x => x.DateTime >= day && x.TotalImport != null && x.TotalExport != null)
+                .OrderBy(x => x.DateTime)
+                .Select(x=>new
+                {
+                    x.TotalImport,
+                    x.TotalExport
+                }).FirstOrDefaultAsync();
 
             var newReading = new Reading
             {
@@ -46,27 +55,27 @@ public class InverterUploaderToDbBackgroundJob(IServiceProvider services)
                 DateTime = r.DateTime
             };
 
-            if (oldReading != null && oldReading.DateTime.Date == newReading.DateTime.Date)
+            if (firstReadingOfDay != null)
             {
-                if (oldReading.TotalImport.HasValue && newReading.TotalImport.HasValue)
+                if (firstReadingOfDay.TotalImport.HasValue && newReading.TotalImport.HasValue)
                 {
-                    newReading.DayBought = Math.Round(newReading.TotalImport.Value - oldReading.TotalImport.Value, 1, MidpointRounding.AwayFromZero);
+                    newReading.DayBought = Math.Round(newReading.TotalImport.Value - firstReadingOfDay.TotalImport.Value, 1, MidpointRounding.AwayFromZero);
                 }
 
-                if (oldReading.TotalExport.HasValue && newReading.TotalExport.HasValue)
+                if (firstReadingOfDay.TotalExport.HasValue && newReading.TotalExport.HasValue)
                 {
-                    newReading.DaySold = Math.Round(newReading.TotalExport.Value - oldReading.TotalExport.Value, 1, MidpointRounding.AwayFromZero);
+                    newReading.DaySold = Math.Round(newReading.TotalExport.Value - firstReadingOfDay.TotalExport.Value, 1, MidpointRounding.AwayFromZero);
                     newReading.DaySelfUse = Math.Round(newReading.DayTotal - newReading.DaySold, 1, MidpointRounding.AwayFromZero);
                 }
             }
 
-            if (oldReading != null && oldReading.DateTime > newReading.DateTime)
+            if (lastReading != null && lastReading.DateTime > newReading.DateTime)
             {
                 context.WriteLine("Reading is outdated.");
                 continue;
             }
 
-            if (oldReading == null || !newReading.Equals(oldReading))
+            if (lastReading == null || !newReading.Equals(lastReading))
             {
                 context.WriteLine("Saving new reading to database ...");
                 context.WriteLine(newReading.ToString());
@@ -74,7 +83,7 @@ public class InverterUploaderToDbBackgroundJob(IServiceProvider services)
             }
             else
             {
-                oldReading.DateTime = newReading.DateTime;
+                lastReading.DateTime = newReading.DateTime;
                 context.WriteLine("Reading already exists in database.");
             }
 
