@@ -6,10 +6,10 @@
     <thead>
     <tr>
         <th>Day</th>
-        <th style="text-align:right; width:85px;">Used</th>
-        <th style="text-align:right; width:85px;">Sold</th>
-        <th style="text-align:right; width:85px;">Bought</th>
-        <th style="text-align:right; width:145px;">Battery</th>
+        <th style="text-align:right;">Used</th>
+        <th style="text-align:right;">Sold</th>
+        <th style="text-align:right;">Bought</th>
+        <th style="text-align:center;" colspan="2">Battery</th>
     </tr>
     </thead>
 
@@ -22,21 +22,22 @@
                     @d.DateTime.ToString("dddd, dd.MM.")
                 </a>
             </td>
-            <td style="text-align:right;" title="Total Import: @d.TotalImport?.ToString("N1")kWh, Total Export: @d.TotalExport?.ToString("N1")kWh">@(d.Consumption.ToString("N1"))</td>
-            <td style="text-align:right;">@(d.Sold.ToString("N1"))</td>
-            <td style="text-align:right;">@(d.Bought.ToString("N1"))</td>
-            <td style="text-align:right;">
+            <td style="text-align:right; white-space: nowrap;" title="Total Import: @d.TotalImport?.ToString("N1")kWh, Total Export: @d.TotalExport?.ToString("N1")kWh">@(d.Consumption.ToString("N1"))</td>
+            <td style="text-align:right; white-space: nowrap;">@(d.Sold.ToString("N1"))</td>
+            <td style="text-align:right; white-space: nowrap;">@(d.Bought.ToString("N1"))</td>
+            <td style="text-align:right; white-space: nowrap;">
                 @if (d.BatterySocMin > 0 || d.BatterySocMax > 0)
                 {
                     <text>
                         @(d.BatterySocMin.ToString("N0"))-@(d.BatterySocMax.ToString("N0")) %
                     </text>
                 }
-
+            </td>
+            <td style="text-align:right; white-space: nowrap;">
                 @if (d is { BatteryCharge: not null, BatteryDischarge: not null })
                 {
                     <text>
-                        @("+" + d.BatteryCharge.Value.ToString("N1") + "/-" + d.BatteryDischarge.Value.ToString("N1"))
+                        @("+" + d.BatteryCharge.Value.ToString("N1") + "&nbsp;/&nbsp;-" + d.BatteryDischarge.Value.ToString("N1"))
                     </text>
                 }
             </td>
